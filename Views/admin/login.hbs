@@ -1,0 +1,65 @@
+<body style="background-color: rgb(197, 205, 212);">
+
+    <div style="height: 82vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
+        class=" d-flex align-items-center justify-content-center mt-5 p-5">
+        <div class="container-fluid  w-50   " id="asd">
+
+
+            <form action="/admin/checkLogin" method="post">
+                <h2 class="text-center">ADMIN LOG IN</h2><br>
+                <div class="form-floating mb-3 ">
+                    <input type="email" id="mail" name="email" class="form-control" class="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" id="pwd" name="password" class="form-control" class="floatingPassword"
+                        placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+                <br>
+
+                <center>
+
+                    <div class="err">
+                        <h6 style="color: red;" id="ermes">{{errMsg}}</h6>
+                    </div>
+
+                    <div>
+                        <h6 style="color: rgb(12, 164, 12);">{{scsMsg}}</h6>
+                    </div>
+
+                </center>
+                <br>
+                <center><input type="submit" value="LOG IN" class="btn btn-primary btn-md align-items-center" id="butn">
+
+                    <div style="display: flex;margin-top:5%;justify-content:center">
+
+                    </div>
+                </center>
+        </div>
+
+        </form>
+
+        <P id="ppp"></P>
+
+        <div style="color: red;" id="result"></div>
+
+    </div>
+
+</body>
+<script>
+    /* function ValidateEmail(){
+      var email = document.getElementById("email").value
+      var mailformat = (/^[A-Za-z\._\-[0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)
+    
+    if(!email.match(mailformat)){
+      mailError.innerText = "invalid email!"
+      return false
+    }
+    
+    mailError.innerText = ""
+    return true
+    } */
+</script>
+

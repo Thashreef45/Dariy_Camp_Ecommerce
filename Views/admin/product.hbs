@@ -1,0 +1,152 @@
+<body style="background-color: rgb(223, 203, 203);">
+    <center>
+        <div>
+            <div class="container pt-5 " style="display: flexbox;">
+                <div style="display: flex;">
+                    {{!-- search bar... --}}
+                    <form action="/admin/product/search" method="post" style="display: flex;">
+                        <input style="width: 50%;" name="search" type="text" id="search"
+                            class="form-control">&nbsp;&nbsp;
+                        <label class="form-label" for="search"></label>
+                        <input type="submit" value="Search" class="btn btn-primary btn-sm align-items-center">
+                    </form>
+                    {{!-- ...search bar end--}}
+
+                    {{!-- home and add product buttons --}}
+                    <div style="margin-left: 13%;">
+                        <div style="display:flex;">
+                            <form action="/admin/home" method="post">
+                                <input type="submit" value="Home" class="btn btn-secondary btn-md ">
+                            </form>
+                            &nbsp;&nbsp;&nbsp;
+                            <form action="/admin/addProduct">
+                                <input type="submit" value="Add Product" class="btn btn-success  ">
+                            </form>
+
+                            &nbsp;&nbsp;&nbsp;
+                            <form action="/admin/category" method="post">
+                                <input type="submit" value="Category" class="btn "
+                                    style="background-color: rgb(180, 137, 63); color: aliceblue;">
+                            </form>
+                        </div>
+                    </div>
+                    {{!-- home,add product and category buttons ...--}}
+
+                    <div>
+                        <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
+                    </div>
+
+                </div>
+
+            </div> <br>
+
+
+
+
+            <div class="container">
+                <table class="table table-light table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                            <th>Soft Delete</th>
+
+
+                        </tr>
+                    </thead>
+
+                    <body>
+                        {{#each arrayProducts}}
+                        <tr>
+                            <td><img src="../../routes/Public/uploadedimg/{{this.image}}" style="height:40px;"></td>
+                            <td>{{this.name}}</td>
+                            <td>{{this.unit}}</td>
+                            <td>₹{{this.rate}}</td>
+                            <td>{{this.category}}</td>
+                            <td>{{this.quantity}}</td>
+                            <td><a href="/admin/product/edit?id={{this._id}}">Edit</a></td>
+
+                            <td> <a  onclick="delProduct('{{this._id}}')" data-bs-toggle="modal" id="del" data-bs-target="#deleteproductModal" style="color: red;cursor:pointer;">Delete</a></td>
+
+                            {{#if this.status}}
+                            <td><a href="/admin/product/disable?id={{this._id}}">Disable</a></td>
+                            {{else}}
+                            <td><a href="/admin/product/disable?id={{this._id}}">Enable</a></td>
+                            {{/if}}
+
+                        </tr>
+                        {{/each}}
+                    </body>
+                </table>
+            </div>
+
+        </div>
+    </center>
+
+
+
+    {{!-- Model --}}
+    <div class="modal fade" id="deleteproductModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to Delete this Product?
+                    <input type="hidden" id="delProduct">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmproductDelete()'
+                            id="delete-Button">Delete</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{!-- Model ends --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function delProduct(data) {
+            document.getElementById('delProduct').value = data
+        }
+        function confirmproductDelete() {
+            console.log("in comnfirm delete")
+            const id = document.getElementById("delProduct").value
+            console.log(id)
+            fetch("/admin/product/delete", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+                .then(response => {
+                    console.log("in dollar")
+                    $('#deleteproductModal').modal('hide')
+                    console.log(response)
+                })
+                .then(data => {
+                    location.reload()
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        };
+
+    </script>
+
+
+</body>

@@ -1,0 +1,67 @@
+<body style="background-color: rgb(199, 224, 246);">
+
+    <div style="height: 90vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
+        class=" d-flex align-items-center justify-content-center mt-5 p-5">
+        <div class="container-fluid  w-50   " id="asd">
+
+
+            <form action="/admin/update-edited-Product?id={{editProduct._id}}" method="post"
+                enctype="multipart/form-data" aria-required="true">
+                <h2 class="text-center">EDIT PRODUCT</h2><br>
+
+                <div class="form-floating mb-2">
+                    <div class="form-outline">
+                        <input type="file" name="productimage" class="form-control " accept="image/*">
+                        {{!-- <label class="form-label" for="productimage"></label> --}}
+                    </div>
+                </div>
+
+                <select name="category" class="form-select mb-2" aria-label="Default select example">
+                    {{#each categoryArray}}
+                    <option value='{{this.category}}'>{{this.category}}</option>
+                    {{/each}}
+                </select>
+                {{!-- dropdown ends--}}
+
+                <div class="form-floating mb-2 ">
+                    <input type="name" name="productname" class="form-control" class="floatingInput"
+                        placeholder="Product Name" required value="{{editProduct.name}}">
+                    <label for="productname">Product Name</label>
+                </div>
+                <div class="form-floating mb-2 ">
+                    <input type="text" name="producunit" class="form-control" class="floatingInput" placeholder="Unit"
+                        required value="{{editProduct.unit}}">
+                    <label for="producunit">Unit</label>
+                </div>
+                <div class="form-floating mb-2 ">
+                    <input type="number" name="productprice" class="form-control" class="floatingInput"
+                        placeholder="Product Price" required value="{{editProduct.rate}}">
+                    <label for="productprice">Product Price</label>
+                </div>
+                <div class="form-floating ">
+                    <input type="number" name="productquantity" class="form-control" class="floatingInput"
+                        placeholder="Product Quantity" required value="{{editProduct.quantity}}">
+                    <label for="productquantity">Product Quantity</label>
+                </div>
+                <div class="form-floating mt-2">
+                    <input type="text" name="productdescription" class="form-control" class="floatingInput"
+                        placeholder="Product Quantity" required value="{{editProduct.description}}">
+                    <label for="productdescription">Product Description</label>
+                </div>
+                <br>
+                <center>
+                    {{!-- --}}
+                </center>
+                <br>
+                <center><input type="submit" value="Update" class="btn btn-primary btn-md align-items-center">
+                    &nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-secondary btn-md align-items-center" href="/admin/home">Home</a>
+                    <div style="display: flex;margin-top:5%;justify-content:center">
+
+                    </div>
+                </center>
+            </form>
+        </div>
+    </div>
+
+</body>

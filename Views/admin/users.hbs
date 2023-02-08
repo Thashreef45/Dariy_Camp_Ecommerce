@@ -1,0 +1,58 @@
+<body style="background-color: rgb(197, 203, 179);">
+    <center>
+        <div>
+            {{!-- search bar... --}}
+            <div class="container pt-5">
+                <form action="/admin/users/search" method="post">
+                    <div style="display: flex;">
+                        <input style="width: 20%;" name="search" type="text" id="search"
+                            class="form-control" />&nbsp;&nbsp;
+                        <label class="form-label" for="search"></label>
+                        <input type="submit" value="Search" class="btn btn-primary btn-md align-items-center">
+                    </div>
+                </form>
+            </div>
+
+            {{!-- ...search bar end--}} <br>
+
+
+            <div class="container">
+                <table class="table table-light table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Block/Unblock</th>
+                        </tr>
+                    </thead>
+
+                    <body>
+                        {{#each userArray}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>{{this.email}}</td>
+                            {{#if this.status}}
+                            <td><a href="/admin/status?id={{this._id}}" style="color: red;">Block</a></td>
+                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
+                            {{else}}
+                            <td><a href="/admin/status?id={{this._id}}" style="color: green;">Unblock</a></td>
+                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
+                            {{/if}}
+                        </tr>
+                        {{/each}}
+                    </body>
+                </table>
+            </div>
+
+            <div>
+                <div>
+                    <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
+                </div>
+                <form action="/admin/home" method="post">
+                    <input type="submit" value="Home" class="btn btn-primary btn-md align-items-center">
+                </form>
+            </div>
+        </div>
+
+    </center>
+</body>

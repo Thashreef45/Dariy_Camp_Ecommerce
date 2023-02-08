@@ -1,0 +1,61 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
+  <a href="/" class="navbar-brand d-flex align-items-center">
+    <h1 class="m-0">Dairy Camp</h1>
+  </a>
+  <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <div class="navbar-nav ms-auto p-4 p-lg-0">
+      <a href="/" class="nav-item nav-link active">Home</a>
+      <a href="/about" class="nav-item nav-link">About</a>
+      <a href="/products" class="nav-item nav-link">Products</a>
+
+      {{#if isLogin}}
+      <form action="/logout" class="nav-item nav-link text-danger" method="post">
+        <input value="Logout" type="submit" style="border: 0ch;color:red;background-color:white;">
+      </form>
+      {{else }}
+      <a href="/login" class="nav-item nav-link">Login / Sign up</a>
+      {{/if}}
+    </div>
+  </div>
+</nav>
+<!-- Navbar End -->
+
+
+<div class="container">
+  <table class="table table-striped table-dark mt-5">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Product</th>
+        <th scope="col">Name</th>
+        <th scope="col">Unit</th>
+        <th scope="col">Rate</th>
+        <th scope="col"></th>
+        <th scope="col">Quantity</th>
+        <th scope="col"></th>
+        <th scope="col">Total</th>
+        <th scope="col">Remove</th>
+
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>image</td>
+        <td>name</td>
+        <td>ML</td>
+        <td>10</td>
+        <td>-</td>
+        <td>6</td>
+        <td>+</td>
+        <td>$60</td>
+        <td>Delete</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

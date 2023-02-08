@@ -1,0 +1,70 @@
+<body style="background-color: rgb(197, 205, 212);">
+
+    <body style="background-color: rgb(197, 205, 212);">
+
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
+            <a href="/" class="navbar-brand d-flex align-items-center">
+                <h1 class="m-0">Dairy Camp</h1>
+            </a>
+            <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/about" class="nav-item nav-link">About</a>
+                    <a href="/products" class="nav-item nav-link">Products</a>
+
+                    {{#if isLogin}}
+                    <form action="/logout" class="nav-item nav-link text-danger" method="post">
+                        <input value="Logout" type="submit" style="border: 0ch;color:red;background-color:white;">
+                    </form>
+                    {{else }}
+                    <a href="/login" class="nav-item nav-link">Login / Sign up</a>
+                    {{/if}}
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <div style="height: 75vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
+            class=" d-flex align-items-center justify-content-center mt-5 p-5">
+            <div class="container-fluid  w-50   " id="asd">
+
+
+                <form action="/signupverify" method="post">
+                    <center>
+                        <p style="color:rgb(11, 11, 118) ;" class="text-center ">OTP is send to your
+                            email&nbsp;.&nbsp;Please enter your OTP.</p>
+                    </center>
+                    <div class="form-floating mb-3 ">
+                        <input type="text" id="otp" name="signupotp" class="form-control" class="floatingInput"
+                            placeholder="Enter your OTP">
+                        <label for="floatingInput" style="color: rgb(59, 59, 59);">Enter your OTP</label>
+                    </div>
+
+                    <center>
+
+                        <div class="err">
+                            <h6 style="color: red;" id="ermes">{{errMsg}}</h6>
+                        </div>
+
+                        <div>
+                            <h6 style="color: rgb(12, 164, 12);">{{scsMsg}}</h6>
+                        </div>
+
+                    </center>
+                    <br>
+                    <center>
+                        <input type="submit" value="Verify" class="btn btn-success btn-md align-items-center" id="butn">
+                    </center>
+            </div>
+
+            </form>
+
+            <P id="ppp"></P>
+
+            <div style="color: red;" id="result"></div>
+        </div>

@@ -1,0 +1,119 @@
+<body style="background-color: rgb(171, 169, 169);">
+
+    {{!-- Add products --}}
+
+
+    <div style="height: 40vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
+        class=" d-flex align-items-center justify-content-center  p-5">
+        <div class="container-fluid  w-50   " id="asd">
+
+
+            <form action="/admin/addCategory" method="post">
+                <h6 class="text-center">ADD Category</h6><br>
+                <div class="form-floating mb-2">
+                    <input type="text" id="categoryadd" name="category" class="form-control" class="floatingInput"
+                        placeholder="Add new category here">
+                    <label for="floatingInput">New Category</label>
+                </div>
+                <br>
+                <center><input type="submit" value="ADD" class="btn btn-primary btn-md align-items-center" id="butn">
+
+                </center>
+        </div>
+        </form>
+    </div>
+
+    <form action="/admin/home" method="post" class="px-5">
+        <input type="submit" value="Home" class="btn btn-secondary btn-md mx-5">
+    </form>
+
+    <hr>
+    <div class="container">
+        <table class="table table-light table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+
+            <body>
+                {{#each categoryArray}} {{!-- category array here --}}
+                <tr>
+                    <td>{{this.category}}</td>
+                    {{!-- <td> <a href="/delete-catogery/{{_id}}" style="color: red;" onclick="hi()">Delete</a></td>
+                    --}}
+                    <td>
+                        <a onclick="delCat('{{this._id}}')" data-bs-toggle="modal" id="del" data-bs-target="#deleteModal" class="text-danger" style="cursor:pointer;">
+                            Delete</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </body>
+        </table>
+    </div>
+
+
+
+
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to Delete this Category?
+        <input type="hidden" id="delCategory">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+       <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmDelete()' id="delete-Button">Delete</button></a>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function delCat(data) {
+    document.getElementById('delCategory').value = data
+  }
+  function confirmDelete() {
+    console.log("in comnfirm delete")
+    const id = document.getElementById("delCategory").value
+    console.log(id)
+    fetch("/admin/delete-category", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: id
+      })
+    })
+      .then(response => {
+        console.log("in dollar")
+        $('#deleteModal').modal('hide')
+        console.log(response) 
+      })
+      .then(data => {
+        location.reload()
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+</script>
+
+
+
+
+
+</body>
