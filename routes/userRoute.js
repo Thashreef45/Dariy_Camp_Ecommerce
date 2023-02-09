@@ -33,6 +33,12 @@ user_route.get('/edit-profile',userController.edituser)
 user_route.get('/address-management',userController.addressManagement)
 user_route.get('/add-address',userController.addAddress)
 user_route.post('/new-address-update',userController.newAddressUpdate)
+user_route.get('/edit-address',userController.editAddress)
+user_route.post('/edited-address-update',userController.updateEditedAddress)
+user_route.get('/password-reset',userController.resetPassword)
+user_route.post('/reset-password-update',userController.resetPasswordUpdate)
+user_route.get('/cart',userController.cart)
+
 
 
 user_route.post('/logout',userController.userlogout)

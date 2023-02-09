@@ -5,7 +5,7 @@ const bcrypt = require('../helpers/bcrypt')
 const otpGenerator = require('../helpers/otp')
 const mailer = require('../helpers/nodemailer')
 const { product } = require('./adminController')
-const { updateOne } = require('../Model/userModel')
+const { updateOne, findOne } = require('../Model/userModel')
 
 
 let userId // used to store signup user email
@@ -147,7 +147,6 @@ const loginCheck = async (req, res) => {
             if (await bcrypt.checkPassword(req.body.password, loginData.password)) {
                 if (loginData.status) {
                     req.session.user = true
-                    console.log(loginData, '155');
                     res.redirect('/')
                     isLogin = true
                 }
@@ -227,13 +226,13 @@ const aboutPage = (req, res) => {
 const userprofile = async (req, res) => {
     try {
         //finding and Sending default address to hbs
-        let defaultAddress 
-        for(let i = 0 ; i<loginData.address.length; i++){
-            if(loginData.address[i].default){
+        let defaultAddress
+        for (let i = 0; i < loginData.address.length; i++) {
+            if (loginData.address[i].default) {
                 defaultAddress = loginData.address[i]
             }
         }
-        res.render('user', {defaultAddress, loginData, isLogin })
+        res.render('user', { defaultAddress, loginData, isLogin })
 
     } catch (error) {
         console.log(error);
@@ -249,48 +248,142 @@ const edituser = async (req, res) => {
     }
 }
 
-///update-user-profile
+///update-user-profile 
 const updateuserprofile = async (req, res) => {
     try {
         loginData = await User.findOneAndUpdate({ _id: loginData._id },
-            { $set: { name: req.body.name, email: req.body.email, phone: Number(req.body.phone)}},{ new: true }) //address:req.body.addresss
+            { $set: { name: req.body.name, email: req.body.email, phone: Number(req.body.phone) } }, { new: true }) //address:req.body.addresss
         res.redirect('/userprofile')
     } catch (error) {
         console.log(error);
     }
 }
 
-const addressManagement = async(req,res)=>{
+const addressManagement = async (req, res) => {
     try {
         let address = loginData.address
-        res.render('manageaddress',{address,isLogin})
+        res.render('manageaddress', { address, isLogin })
     } catch (error) {
         console.log(error)
     }
 }
 
-const addAddress = async(req,res)=>{
+const addAddress = async (req, res) => {
     try {
-        res.render('newaddress',{isLogin})
+        res.render('newaddress', { isLogin })
     } catch (error) {
-        console.log(error);  
+        console.log(error);
     }
 }
 
-const newAddressUpdate = async (req,res)=>{
+const newAddressUpdate = async (req, res) => {
     try {
-        console.log(req.body,'274',loginData._id);
-        const data = await User.updateOne({_id:loginData._id},{$addToSet:{address:[{address:req.body.address,pincode:req.body.postalcode,place:req.body.city,state:req.body.state}]}},{new : true})
-        loginData = await User.findOne({_id:loginData._id})
+        console.log(req.body, '274', loginData._id);
+        const data = await User.updateOne({ _id: loginData._id }, { $addToSet: { address: [{ address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state }] } }, { new: true })
+        loginData = await User.findOne({ _id: loginData._id })
 
         //setting 'default = true' if there is no another address
-        if(loginData.address.length<2){
-            data = await User.updateOne({_id:loginData._id},{address:[{address:req.body.address,pincode:req.body.postalcode,place:req.body.city,state:req.body.state,default : true}]},{new : true})
-            loginData = await User.findOne({_id:loginData._id})
+        if (loginData.address.length < 2) {
+            data = await User.updateOne({ _id: loginData._id }, { address: [{ address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state, default: true }] }, { new: true })
+            loginData = await User.findOne({ _id: loginData._id })
         }
         res.redirect('/userprofile')
     } catch (error) {
         console.log(error);
+    }
+}
+
+// edit address
+const editAddress = async (req, res) => {
+    let address = loginData.address.filter((element) => {
+        if (element._id == req.query.id) {
+            return element
+        }
+    });
+    address = address[0]
+    res.render('editaddress', { address, isLogin, })
+}
+
+//updating edited address
+const updateEditedAddress = async (req, res) => {
+
+    //finding the specific address by query id
+    let address = loginData.address.filter((element) => {
+        if (element._id == req.query.id) {
+            return element
+        }
+    });
+    address = address[0]
+
+    //finding the index of the address 
+    let indexOfAddress = loginData.address.findIndex((val) => val._id == req.query.id)
+
+
+    //Finding the index of  default address
+    let indexOfDfAddress = loginData.address.findIndex((val) => val.default == true)
+
+    //Find the default address
+    let dfAddress = loginData.address.filter((element) => {
+        if (element.default == true) {
+            return element
+        }
+    });
+    dfAddress = dfAddress[0]
+    // console.log(dfAddress,'dfad',indexOfDfAddress,'dfindex',address,'clicked address',indexOfAddress,'clicked index',Boolean(req.body.default),'tr/fl',req.body,address.default,'--');
+
+    if (address.default) {
+        loginData.address[indexOfAddress] =
+            { address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state, default: true }
+        const update = await User.updateOne({ _id: loginData._id }, { $set: { address: loginData.address } }, { new: true })
+
+
+    }
+    else {
+        if (req.body.default == 'true') {
+            loginData.address[indexOfDfAddress] =
+                { address: dfAddress.address, pincode: dfAddress.pincode, place: dfAddress.place, state: dfAddress.state, default: false }
+            loginData.address[indexOfAddress] =
+                { address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state, default: true }
+
+            const update = await User.updateOne({ _id: loginData._id }, { $set: { address: loginData.address } }, { new: true })
+        }
+        else {
+            loginData.address[indexOfAddress] =
+                { address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state, default: false }
+
+            const update = await User.updateOne({ _id: loginData._id }, { $set: { address: loginData.address } }, { new: true })
+        }
+    }
+    res.redirect('/userprofile')
+}
+//(updating edited address) ends here
+
+///Reset-password
+const resetPassword = async (req,res)=>{
+
+    res.render('resetpw',{errMsg,scsMsg,isLogin})
+    scsMsg = ''
+    errMsg = ''
+
+}
+const resetPasswordUpdate = async(req,res)=>{
+    console.log(req.body);
+    if(await bcrypt.checkPassword(req.body.password,loginData.password)){
+        if(req.body.password1 == req.body.password2){
+            let pw =await bcrypt.securePassword(req.body.password1)
+            let data = await User.updateOne({_id:loginData._id},{password:pw})
+            loginData = await User.findOne({_id:loginData._id})
+            scsMsg = 'Password changed please go back to home'
+            res.redirect('/password-reset')
+        }
+        else{
+            errMsg = "The password confirmation doesn't match"
+            res.redirect('/password-reset')
+        }
+    }
+    else{
+        errMsg = 'Current password is wrong'
+        res.redirect('/password-reset')
     }
 }
 
@@ -365,9 +458,9 @@ const resetpwcheckfail = async (req, res) => {
     res.render('forgetpw3', { errMsg })
     errMsg = ''
 }
-// const cart = async (req,res)=>{
-//     res.render('cart')
-// }
+const cart = async (req,res)=>{
+    res.render('cart',{isLogin})
+}
 
 //404
 const errorPage = async (req, res) => {
@@ -400,8 +493,12 @@ module.exports = {
     edituser,
     addressManagement,
     addAddress,
-    newAddressUpdate
-    // cart
+    newAddressUpdate,
+    editAddress,
+    updateEditedAddress,
+    resetPassword,
+    resetPasswordUpdate,
+    cart
 }
 
 

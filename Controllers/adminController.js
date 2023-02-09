@@ -228,8 +228,16 @@ const categoryManagement = async (req, res) => {
     res.render('category', { categoryArray })
 }
 const addCategory = async (req, res) => {
+    let category = categoryModel.find({})
+    category = addCategory.filter((val)=>{
+        
+    })
+    req.body.category
     if (req.body.category == '') {
         res.redirect('/admin/category')
+    }
+    else if(hi){
+
     }
     else {
         let catdata = await new categoryModel({
