@@ -1,0 +1,175 @@
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
+        <a href="/" class="navbar-brand d-flex align-items-center">
+            <h1 class="m-0">Dairy Camp</h1>
+        </a>
+        <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a href="/" class="nav-item nav-link active">Home</a>
+                <a href="/about" class="nav-item nav-link">About</a>
+                <a href="/products" class="nav-item nav-link">Products</a>
+
+                {{#if isLogin}}
+                <form action="/logout" class="nav-item nav-link text-danger" method="post">
+                    <input value="Logout" type="submit" style="border: 0ch;color:red;background-color:white;">
+                </form>
+                {{else }}
+                <a href="/login" class="nav-item nav-link">Login / Sign up</a>
+                {{/if}}
+                <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
+                {{#if isLogin}}
+                <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
+                {{/if}}
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+<body style="background-color: #eee8c4">
+    <section class="h-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      {{#if myorders}}
+      <div class="col-lg-10 col-xl-8">
+        <div class="card" style="border-radius: 10px;">
+          <div class="card-header px-4 py-4" style="border-color: rgb(179, 201, 193);">
+            <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #4e454c;">{{loginData.name}}</span></h5>
+          </div>
+          <div class="card-body p-4" style="background-color: #e4e0e0;">
+            {{!-- <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0" style="color: #a8729a;">Receipt</p>
+              <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p>
+            </div> --}}
+            {{#each myorders}}
+            
+            <div class="card shadow-0 border mb-4">
+              <div class="card-body">
+
+                <p style="font-family:sans-serif;color:grey;">ORDER ID:{{this.orderId}}</p>
+                <a href="/myorders-details?id={{this._id}}">View Details</a>
+                {{#each product}}
+                <div class="row">
+                  <div class="col-md-2">
+                    {{!-- <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/13.webp"
+                      class="img-fluid" alt="Phone"> --}}
+                      {{!-- <p>{{this.orderId}}</p> --}}
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0"></p>
+                  </div>
+                  
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">{{this.name}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">₹{{this.price}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    <p class="text-muted mb-0 small">Qty:{{this.quantity}}</p>
+                  </div>
+                  <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                    {{!-- <p class="text-muted mb-0 small">₹{{this.price}}</p> --}}
+                  </div>
+                </div>
+                {{/each}}
+
+                <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                <div class="row d-flex align-items-center">
+                  <div class="col-md-2">
+                    <p class="text-muted mb-0 small">Order placed</p>
+                  </div>
+                  <div class="col-md-10">
+                    {{#ifeq this.status 'Order placed'}}
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      <div class="progress-bar" role="progressbar"
+                        style="width: 60%; border-radius: 16px; background-color: #cee774;" aria-valuenow="65"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5" style="padding-right: 22rem;"></p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+                    </div>
+
+                    {{#ifeq this.deleverymethod 'scheduled'}}
+                    <center><div class="mt-2"><a class="btn btn-danger" href="/cancel-order?id={{this._id}}">Cancel order</a></div></center>
+                    {{/ifeq}}
+
+                    {{/ifeq}}
+
+
+                    {{#ifeq this.status 'Delivered'}}
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      <div class="progress-bar" role="progressbar"
+                        style="width: 100%; border-radius: 16px; background-color: #29ee9f;" aria-valuenow="65"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5" style="padding-right: 22rem;"></p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+                    </div>
+                    {{/ifeq}}
+
+
+                    {{#ifeq this.status 'Cancelled'}}
+                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                      <div class="progress-bar" role="progressbar"
+                        style="width: 100%; border-radius: 16px; background-color: #ea3a26;" aria-valuenow="65"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-around mb-1">
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5" style="padding-right: 22rem;"></p>
+                      <p class="text-muted mt-1 mb-0 small ms-xl-5">Cancelled</p>
+                    </div>
+                    {{/ifeq}}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {{!-- loop ends here --}}
+
+            {{!-- <div class="d-flex justify-content-between pt-2">
+              <p class="fw-bold mb-0">Order Details</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> $898.00</p>
+            </div>
+
+            <div class="d-flex justify-content-between pt-2">
+              <p class="text-muted mb-0">Invoice Number : 788152</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <p class="text-muted mb-0">Invoice Date : 22 Dec,2019</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
+            </div>
+
+            <div class="d-flex justify-content-between mb-5">
+              <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+            </div>
+          </div> --}}
+
+          <div class="card-footer border-0 px-4 py-2"
+            style="background-color: #72a87e; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h6 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
+              : <span class="h5 mb-0 ms-2">₹{{this.total}}</span></h6>
+          </div><br><hr>
+          {{/each}}
+          
+
+        </div>
+      </div>
+      {{else}}
+      <div  style="justify-content: center;align-items: center;display: flex;">
+        <h3 class="text-danger my-5" style="font-family: sans-serif;">No Orders</h3>
+      </div>
+      {{/if}}
+
+    </div>
+  </div>
+</section>
+</body>

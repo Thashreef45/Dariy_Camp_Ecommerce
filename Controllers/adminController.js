@@ -2,7 +2,14 @@ const userModel = require('../Model/userModel')
 const Admin = require('../Model/adminModel')
 const categoryModel = require('../Model/categoryModel')
 const productModel = require('../Model/productModel')
+const orderModel = require('../Model/ordermodel')
+const time = require('moment')
+const couponModel = require('../Model/couponmodel')
 const { ObjectId } = require('mongodb')
+const User = require('../Model/userModel')
+
+
+
 
 let userArray // Storing users collection 
 let categoryArray //Storin category collection
@@ -37,12 +44,43 @@ const adminLogin = async (req, res) => {
 
 const adminHome = async (req, res) => {
     if (req.session.admin) {
+
         res.render('home')
     }
     else {
         res.redirect('/admin/login')
     }
 
+}
+const adminData = async (req, res) => {
+    console.log(req.body,'<<from fetch admin side 53');
+    let Orders = await orderModel.find().lean()
+
+    let products = await productModel.find({}, { name: 1, _id: 0 }).lean()
+
+    products.forEach((element) => {
+        element.count = 0
+        Orders.forEach((item) => {
+            item.product.forEach((prd) => {
+                if (prd.name == element.name) {
+                    element.count += prd.quantity;
+                }
+            })
+        })
+    })
+
+    let names = []
+    let counts = []
+    products.forEach(({ count, name }) => {
+        if (count) {
+            names.push(name)
+            counts.push(count)
+        }
+    })
+    res.json({
+        names,
+        counts
+    })
 }
 
 const userManagement = async (req, res) => {
@@ -129,7 +167,6 @@ const product = async (req, res) => {
     if (req.session.admin) {
         if (!searched) {
             arrayProducts = await setProductCollection()
-            console.log(arrayProducts, 'hhhh 133 admin');
             res.render('product', { arrayProducts })
         }
         else {
@@ -220,24 +257,34 @@ const updateProduct = async (req, res) => {
         description: req.body.productdescription
     })
     const productSave = newProduct.save()
-    res.redirect('/admin/product')
+    // res.redirect('/admin/product')
 }
 
 const categoryManagement = async (req, res) => {
     categoryArray = await setCategoryCollection()
-    res.render('category', { categoryArray })
+    res.render('category', { categoryArray, errMsg })
+    errMsg = ''
 }
 const addCategory = async (req, res) => {
-    let category = categoryModel.find({})
-    category = addCategory.filter((val)=>{
-        
-    })
-    req.body.category
-    if (req.body.category == '') {
+    let category = await categoryModel.find({})
+    let notUnique = false
+
+    for (let index = 0; index < category.length; index++) {
+        if (category[index].category.toLowerCase().replace(/\s/g, '') == req.body.category.toLowerCase().replace(/\s/g, '')) {
+            notUnique = true
+        }
+    }
+
+    // removing space and saving into "const input"
+    const input = req.body.category.replace(/\s/g, '');
+    if (input == '') {
+        errMsg = 'Only spaces are not allowed'
         res.redirect('/admin/category')
     }
-    else if(hi){
-
+    else if (notUnique) {
+        res.redirect('/admin/category')
+        errMsg = 'Similar category is there'
+        notUnique = false
     }
     else {
         let catdata = await new categoryModel({
@@ -260,12 +307,195 @@ const deletecategory = async (req, res) => {
     }
 }
 
+const orderManagement = async (req, res) => {
+    
+    let orders = await orderModel.find({deleverymethod : 'normal',status:{$ne:'Order placed'}}).lean() 
+    let sOrders = await orderModel.find({deleverymethod : 'scheduled',status:{$ne:'Order placed'}}).lean()
+
+    const pendingOrders = await orderModel.find({deleverymethod : 'normal',status:'Order placed'}).lean()
+    const sPendingOrders = await orderModel.find({deleverymethod : 'scheduled',status:'Order placed'}).lean()
+
+    orders.forEach((val) => {
+        val.date[0].orderdate = time(val.date[0].orderdate).format('DD-MM-YYYY')
+
+    })
+    sOrders.forEach((val)=>{
+        val.date[0].orderdate = time(val.date[0].orderdate).format('DD-MM-YYYY')
+        val.date[1].schedule = time(val.date[1].schedule).format('DD-MM-YYYY')
+        
+    })
+
+
+    pendingOrders.forEach((val) => {
+        val.date[0].orderdate = time(val.date[0].orderdate).format('DD-MM-YYYY')
+
+    })
+    sPendingOrders.forEach((val)=>{
+        val.date[0].orderdate = time(val.date[0].orderdate).format('DD-MM-YYYY')
+        val.date[1].schedule = time(val.date[1].schedule).format('DD-MM-YYYY')
+        
+    })
+
+    pendingOrders.reverse()
+    sPendingOrders.reverse()
+    sOrders.reverse()
+    orders.reverse()
+    res.render('ordermanagement', { orders,sOrders,pendingOrders ,sPendingOrders})
+
+   
+}
+const adminOrderViewproducts = async (req, res) => {
+    console.log(req.query.id, '318 admin side');
+
+    let orderData = await orderModel.find({ _id: req.query.id }).lean()
+    console.log(orderData);
+    let ids = orderData[0].product.map((val) => {
+        return val.id
+    })
+
+    let subTotal = orderData[0].total
+    let deleveryMethod = orderData[0].deleverymethod.toUpperCase()
+    let paymentmethod = orderData[0].paymentmethod.toUpperCase()
+    let orderId = orderData[0].orderId
+    let address = Object.values(orderData[0].address[0])
+    address = address.slice(0, 4)
+    let userId = orderData[0].userId
+
+    //Taking user name
+    let userName = await User.findOne({_id:userId},{_id:0,name:1})
+    userName = userName.name
+
+    let productData = await productModel.find({ _id: { $in: ids } }).lean()
+    productData.forEach((element, index) => {
+        element.quantity = orderData[0].product[index].quantity
+        element.total = element.rate * element.quantity
+    })
+
+    console.log(productData, '<<797')
+    res.render('orderdetails', {
+        productData, paymentmethod, deleveryMethod, subTotal, orderId, address, orderData, userId,userName
+    })
+
+    //res.render('orderdetails')
+}
+
+
+const adminProductDelevered = async (req, res) => {
+
+    console.log(req.query.id, 'id vannu 288 admin');
+    const data = await orderModel.updateOne({ _id: req.query.id }, { $set: { status: 'Delivered' } })
+
+    res.redirect('/admin/order-management')
+
+}
+
+const Coupon = async (req, res) => {
+    const couponArray = await couponModel.find()
+    res.render('couponmanagement', { couponArray, errMsg })
+    errMsg = ''
+}
+
+const addCoupon = async (req, res) => {
+    console.log(req.body);
+    let data = await couponModel.find().lean()
+
+    let unique = true
+    data.forEach((val) => {
+        if (val.couponcode.toLowerCase().replace(/\s/g, '') == req.body.coupon.toLowerCase().replace(/\s/g, '')) {
+            unique = false
+        }
+    })
+
+    let input = req.body.coupon
+    console.log(input, '<<null input is here');
+    if (input.replace(/\s/g, '') == '') {
+        errMsg = 'Spaces are not taken as input'
+        res.redirect('/admin/coupon')
+    }
+    else if (!unique) {
+        errMsg = 'Similar Coupon already exist'
+        res.redirect('/admin/coupon')
+    }
+    else {
+        let couponAdd = new couponModel({
+            couponcode: req.body.coupon,
+            expiry: req.body.date,
+            offer: Number(req.body.discount)
+        })
+        let upload = await couponAdd.save()
+        res.redirect('/admin/coupon')
+    }
+}
+
+const couponStatusUpdate = async (req, res) => {
+    let coupon = await couponModel.findOne({ _id: req.body.id })
+    console.log(req.body, coupon, '<<coupon id ,328 admin side ,body');
+
+
+    if (coupon.isvalid) {
+        let data = await couponModel.updateOne({ _id: req.body.id }, { $set: { isvalid: false } })
+        res.json('false')
+    }
+    else {
+        let data = await couponModel.updateOne({ _id: req.body.id }, { $set: { isvalid: true } })
+        res.json('true')
+    }
+}
+
+
+//Sales report page
+const salesReport = async (req, res) => {
+    try {
+        let Orders = await orderModel.find().lean()
+
+        let products = await productModel.find({}, { name: 1, category: 1, _id: 0, rate: 1 }).lean()
+        products.forEach((val) => {
+            val.count = 0
+            val.sum = 0
+        })
+
+        products.forEach((element) => {
+
+            Orders.forEach((val) => {
+                val.product.forEach((prd) => {
+                    if (prd.name == element.name) {
+                        element.count += prd.quantity;
+                        element.sum = element.rate * element.count
+                    }
+                })
+            })
+        })
+
+        let sum = 0
+        let quantity = 0
+
+        products.forEach((i) => {
+            sum += i.sum
+            quantity += i.count
+        })
+        
+        products.push({
+            count: quantity, sum: sum,
+            name :'Total  (Count and Sum)',
+            // rate :'',
+            // category :''
+        })
+
+        res.render('salesreport', { products ,quantity,sum})
+
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const logout = async (req, res) => {
     req.session.destroy()
     res.redirect('/admin/login')
 }
 
 module.exports = {
+
     adminLogin,
     adminHome,
     checkLogin,
@@ -283,6 +513,14 @@ module.exports = {
     productdisable,
     editProduct,
     updateEditedProduct,
-    productDelete
+    productDelete,
+    orderManagement,
+    adminProductDelevered,
+    Coupon,
+    addCoupon,
+    couponStatusUpdate,
+    adminOrderViewproducts,
+    salesReport,
+    adminData
     // productsearch
 }

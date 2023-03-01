@@ -1,66 +1,219 @@
-<body style="background-color: rgb(199, 224, 246);">
+<!doctype html>
+<html lang="en">
 
-    <div style="height: 90vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
-        class=" d-flex align-items-center justify-content-center mt-5 p-5">
-        <div class="container-fluid  w-50   " id="asd">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Dashboard Template · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
+
+    {{!-- 14 --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 
-            <form action="/admin/addProduct" method="post" enctype="multipart/form-data" aria-required="true">
-                <h2 class="text-center">ADD PRODUCT</h2><br>
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                <div class="form-floating mb-2">
-                    <div class="form-outline">
-                        <input type="file" name="productimage" class="form-control " accept="image/*" />
-                        {{!-- <label class="form-label" for="productimage"></label> --}}
-                    </div>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="/Public/styleSheet/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Dairy Camp</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {{!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        --}}
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <form action="/admin/logout" method="post">
+                    <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
+                        class="bg-dark text-primary nav-link px-3">
+                </form>
+                {{!-- <a class="nav-link px-3" href="">Sign out</a> --}}
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid ">
+        <div class="row ">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mt-4">
+                            <a class="nav-link " aria-current="page" href="/admin/home">
+                                <span data-feather="home"></span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/category">
+                                <span data-feather="file"></span>
+                                Category
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/product">
+                                <span data-feather="shopping-cart"></span>
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users">
+                                <span data-feather="users"></span>
+                                Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/order-management">
+                                <span data-feather="clipboard"></span>
+                                Orders
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/coupon">
+                                <span data-feather="slack"></span>
+                                Coupon
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/sales">
+                                <span data-feather="trending-up"></span>
+                                Sales Report
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </nav>
 
-                <select name="category" class="form-select mb-2" aria-label="Default select example">
-                    {{#each categoryArray}}
-                    <option value='{{this.category}}'>{{this.category}}</option>
-                    {{/each}}
-                </select>
-                {{!-- dropdown ends--}}
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {{!-- <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1> --}}
 
-                <div class="form-floating mb-2 ">
-                    <input type="name" name="productname" class="form-control" class="floatingInput"
-                        placeholder="Product Name" required>
-                    <label for="productname">Product Name</label>
-                </div>
-                <div class="form-floating mb-2 ">
-                    <input type="text" name="producunit" class="form-control" class="floatingInput" placeholder="Unit"
-                        required>
-                    <label for="producunit">Unit</label>
-                </div>
-                <div class="form-floating mb-2 ">
-                    <input type="number" name="productprice" class="form-control" class="floatingInput"
-                        placeholder="Product Price" required>
-                    <label for="productprice">Product Price</label>
-                </div>
-                <div class="form-floating ">
-                    <input type="number" name="productquantity" class="form-control" class="floatingInput"
-                        placeholder="Product Quantity" required>
-                    <label for="productquantity">Product Quantity</label>
-                </div>
-                <div class="form-floating mt-2">
-                    <input type="text" name="productdescription" class="form-control" class="floatingInput"
-                        placeholder="Product Quantity" required>
-                    <label for="productdescription">Product Description</label>
-                </div>
-                <br>
-                <center>
-                    {{!-- --}}
-                </center>
-                <br>
-                <center><input type="submit" value="Add Product" class="btn btn-primary btn-md align-items-center">
-                    &nbsp;&nbsp;&nbsp;
-                    <a class="btn btn-secondary btn-md align-items-center" href="/admin/home">Home</a>
-                    <div style="display: flex;margin-top:5%;justify-content:center">
 
-                    </div>
-                </center>
-            </form>
+
+
+
+
+
+
+
+                    <body style="background-color: rgb(199, 224, 246);">
+
+                        <div style="height: 100vh ; background-color: linear-gradient(to left, #ffffff 0%, #ffffff 100%; width :50vw"
+                            class=" d-flex align-items-center justify-content-center mt-5 p-5">
+                            <div class="container-fluid  w-50   " id="asd">
+
+
+                                <form action="/admin/addProduct" method="post" enctype="multipart/form-data"
+                                    aria-required="true">
+                                    <h2 class="text-center">ADD PRODUCT</h2><br>
+
+                                    <div class="form-floating mb-2">
+                                        <div class="form-outline">
+                                            <input type="file" name="productimage" class="form-control "
+                                                accept="image/*" />
+                                            {{!-- <label class="form-label" for="productimage"></label> --}}
+                                        </div>
+                                    </div>
+
+                                    <select name="category" class="form-select mb-2"
+                                        aria-label="Default select example">
+                                        {{#each categoryArray}}
+                                        <option value='{{this.category}}'>{{this.category}}</option>
+                                        {{/each}}
+                                    </select>
+                                    {{!-- dropdown ends--}}
+
+                                    <div class="form-floating mb-2 ">
+                                        <input type="name" name="productname" class="form-control" class="floatingInput"
+                                            placeholder="Product Name" required>
+                                        <label for="productname">Product Name</label>
+                                    </div>
+                                    <div class="form-floating mb-2 ">
+                                        <input type="text" name="producunit" class="form-control" class="floatingInput"
+                                            placeholder="Unit" required>
+                                        <label for="producunit">Unit</label>
+                                    </div>
+                                    <div class="form-floating mb-2 ">
+                                        <input type="number" name="productprice" class="form-control"
+                                            class="floatingInput" placeholder="Product Price" required>
+                                        <label for="productprice">Product Price</label>
+                                    </div>
+                                    <div class="form-floating ">
+                                        <input type="number" name="productquantity" class="form-control"
+                                            class="floatingInput" placeholder="Product Quantity" required>
+                                        <label for="productquantity">Product Quantity</label>
+                                    </div>
+                                    <div class="form-floating mt-2">
+                                        <input type="text" name="productdescription" class="form-control"
+                                            class="floatingInput" placeholder="Product Quantity" required>
+                                        <label for="productdescription">Product Description</label>
+                                    </div>
+                                    <br>
+                                    <center>
+                                        {{!-- --}}
+                                    </center>
+                                    <br>
+                                    <center><input type="submit" value="Add Product"
+                                            class="btn btn-primary btn-md align-items-center">
+                                        &nbsp;&nbsp;&nbsp;
+                                       
+                                        <div style="display: flex;margin-top:5%;justify-content:center">
+
+                                        </div>
+                                    </center>
+                                </form>
+                            </div>
+                        </div>
+
+                    </body>
+
+                    
+
+
+            </main>
         </div>
     </div>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    {{!--
+    <script src="/Public/js/dashboard.js"></script> --}}
 </body>
+
+</html>

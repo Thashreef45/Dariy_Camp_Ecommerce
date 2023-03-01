@@ -21,7 +21,7 @@
       {{/if}}
       <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
       {{#if isLogin}}
-      <a href="/userprofile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
+      <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
       {{/if}}
     </div>
   </div>
@@ -72,138 +72,224 @@
 
 
 <section class="h-100 gradient-custom">
-  <div class="container py-5">
-    <div class="row d-flex justify-content-center my-4">
-      <div class="col-md-8">
-        <div class="card mb-4 shadow">
-          <div class="card-header py-3">
-            <h5 class="mb-0">Cart - 2 items</h5>
-          </div>
-          <div class="card-body">
 
-            <!-- Single item -->
-            <div class="row">
-              <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
-                <!-- Image -->
-                <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Vertical/13a.webp"
-                    class="w-100" />
-                  <a href="#!">
-                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
-                  </a>
+  <form action='/checkout' method="post">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center my-4">
+        <div class="col-md-8">
+          <div class="card mb-4 shadow">
+            <div class="card-header py-3">
+              <h5 class="mb-0 text-primary">{{itemsCount}}-Items is in your cart</h5>
+            </div>
+            <div class="card-body">
+              <!-- Single item -->
+              {{#if cartArray}}
+              {{else}}
+              <h5 class="mx-5 text-danger">There is no Items in your cart</h5>
+              {{/if}}
+              {{#each cartArray}}
+              <div class="row">
+
+                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                  <!-- Image -->
+                  <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                    <img src="../../routes/Public/uploadedimg/{{this.image}}" class="w-100" />
+                    <a href="#!">
+                      <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                    </a>
+                  </div>
+                  <!-- Image -->
                 </div>
-                <!-- Image -->
-              </div>
 
-              <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
-                <!-- Data -->
-                <p><strong>Red hoodie</strong></p>
-                <p>Color: red</p>
-                <p>Size: M</p>
+                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                  <!-- Data -->
+                  <p><strong>{{this.name}}</strong></p>
+                  <input type="hidden" name="name" value="{{this.name}}">
+                  <input type="hidden" name="id" value="{{this._id}}">
 
-                <button type="button" class="btn btn-primary btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
-                  title="Remove item">
-                  <i class="fas fa-trash"></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
-                  title="Move to the wish list">
-                  <i class="fas fa-heart"></i>
-                </button>
-                <!-- Data -->
-              </div>
+                  <p>{{this.unit}}</p>
+                  <p>₹{{this.rate}}</p>
+                  <input type="hidden" id="rate" name="rate" value="{{this.rate}}">
 
-              <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-                <!-- Quantity -->
-                <div class="d-flex mb-4" style="max-width: 300px">
-                  <button class="btn btn-primary px-3 me-2"
-                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                    <i class="fas fa-minus"></i>
-                  </button>
+                  <a href="/remove-item?id={{this._id}}" type="button" class="btn btn-danger btn-sm me-1 mb-2"
+                    data-mdb-toggle="tooltip" title="Remove item">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                  {{!-- <button type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
+                    title="Move to the wish list">
+                    <i class="fas fa-heart"></i>
+                  </button> --}}
+                  <!-- Data -->
+                </div>
 
-                  <div class="form-outline">
-                    <input id="form1" min="0" name="quantity" value="1" type="number" class="form-control" />
-                    <label class="form-label" for="form1">Quantity</label>
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                  <!-- Quantity -->
+                  <div class="d-flex mb-4" style="max-width: 300px">
+                    <a class="btn btn-primary px-3 me-2" id="myButton1"
+                      onclick="this.parentNode.querySelector('input[type=number]').stepDown();calc()">
+                      <i class="fas fa-minus"></i>
+                    </a>
+
+                    <div class="form-outline">
+                      <input id="form1" min="1" max="{{this.quantity}}" name="quantity" value="{{this.count}}"
+                        type="number" class="form-control" onchange="calc()">
+                      {{!-- <label class="form-label" for="form1">Quantity</label> --}}
+                    </div>
+
+                    {{!-- hidden --}}
+                    {{!-- <input type="hidden" name="count" value="{{this.count}}"> --}}
+
+
+                    <a class="btn btn-primary px-3 ms-2" id="myButton2"
+                      onclick="this.parentNode.querySelector('input[type=number]').stepUp();calc()">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                  <!-- Quantity -->
+
+                  <!-- Price -->
+
+                  <div class="text-start text-md-center">
+                    <p>Total </p>
+                    <h6 name="tAmount">
+                      {{this.tAmount}}
+                      {{!-- ₹<strong id="tamount">56</strong> --}}
+                    </h6>
                   </div>
 
-                  <button class="btn btn-primary px-3 ms-2"
-                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                    <i class="fas fa-plus"></i>
-                  </button>
+                  <!-- Price -->
                 </div>
-                <!-- Quantity -->
-
-                <!-- Price -->
-                <p class="text-start text-md-center">
-                  <strong>$17.99</strong>
-                </p>
-                <!-- Price -->
               </div>
+              <!-- Single item -->
+              <hr class="my-4" />
+              {{/each}}
+
+
             </div>
-            <!-- Single item -->
-            <hr class="my-4" />
-
-
           </div>
+          {{!-- <div class="card mb-4">
+            <div class="card-body">
+              <p><strong>Expected shipping delivery</strong></p>
+              <p class="mb-0">12.10.2020 - 14.10.2020</p>
+            </div>
+          </div> --}}
+          {{!-- <div class="card mb-4 mb-lg-0">
+            <div class="card-body">
+              <p><strong>We accept</strong></p>
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                alt="Visa" />
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                alt="American Express" />
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                alt="Mastercard" />
+              <img class="me-2" width="45px"
+                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.webp"
+                alt="PayPal acceptance mark" />
+            </div>
+          </div> --}}
         </div>
-        {{!-- <div class="card mb-4">
-          <div class="card-body">
-            <p><strong>Expected shipping delivery</strong></p>
-            <p class="mb-0">12.10.2020 - 14.10.2020</p>
-          </div>
-        </div> --}}
-        {{!-- <div class="card mb-4 mb-lg-0">
-          <div class="card-body">
-            <p><strong>We accept</strong></p>
-            <img class="me-2" width="45px"
-              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
-              alt="Visa" />
-            <img class="me-2" width="45px"
-              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
-              alt="American Express" />
-            <img class="me-2" width="45px"
-              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
-              alt="Mastercard" />
-            <img class="me-2" width="45px"
-              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.webp"
-              alt="PayPal acceptance mark" />
-          </div>
-        </div> --}}
-      </div>
-      <div class="col-md-4">
-        <div class="card mb-4 shadow">
-          <div class="card-header py-3">
-            <h5 class="mb-0">Summary</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                Sub-Total
-                <span>3</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                Shipping
-                <span>Gratis</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                <div>
-                  <strong>Total amount</strong>
-                  <strong>
-                    <p class="mb-0">(including VAT)</p>
-                  </strong>
-                </div>
-                <span><strong>$53.98</strong></span>
-              </li>
-            </ul>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow">
+            <div class="card-header py-3">
+              <h5 class="mb-0">Summary</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                  Sub-Total
+                  <span id="subTotal">{{subTotal}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  {{!-- Shipping
+                  <span>Gratis</span> --}}
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                  <div>
+                    <strong>Total amount</strong>
+                    <strong>
+                      <p class="mb-0">(including VAT)</p>
+                    </strong>
+                  </div>
+                  <h6 id="total" class="text-primary">{{Total}}</h6>
+                  {{!-- <span><strong>$53.98</strong></span> --}}
+                </li>
+              </ul>
 
-            <button type="button" class="btn btn-primary btn-lg btn-block">
-              Go to checkout
-            </button>
+              {{#if itemsCount}}
+              {{!-- <button type="button" onclick="calc()" class="btn btn-primary btn-lg btn-block">
+                Go to checkout
+              </button> --}}
+              <input type="submit" onclick="calc()" class="btn btn-primary btn-lg btn-block" value="Go to checkout">
+              {{/if}}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+
+  </form>
+
 </section>
+
+
+
+<script>
+
+  function calc() {
+    let length = document.getElementsByName('rate').length
+
+    let cart = []
+    let total = 0
+    let totalCount = 0
+    for (let i = 0; i < length; i++) {
+      cart.push({
+        id: document.getElementsByName('id')[i].value,
+        name: document.getElementsByName('name')[i].value,
+        count: document.getElementsByName('quantity')[i].value,
+        rate: document.getElementsByName('rate')[i].value
+      })
+
+      document.getElementsByName('tAmount')[i].innerHTML
+        = Number(document.getElementsByName('quantity')[i].value) * Number(document.getElementsByName('rate')[i].value)
+      total += Number(document.getElementsByName('quantity')[i].value) * Number(document.getElementsByName('rate')[i].value)
+      totalCount += Number(document.getElementsByName('quantity')[i].value)
+    }
+    document.getElementById('total').innerHTML = 'Rs ' + total
+    document.getElementById('subTotal').innerHTML = totalCount
+
+    console.log(cart)
+
+    fetch('http://localhost:3000/cart-updation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        cart  
+      }),
+    })
+      .then(res => res.json()).then((data) => console.log(data))
+  }
+
+
+
+
+
+  {{!-- var button = document.getElementById('myButton1');
+  button.addEventListener('click', function (event) {
+    event.preventDefault();
+    // additional actions you want to perform on button click
+  }); --}}
+
+  {{!-- var button = document.getElementById('myButton2');
+  button.addEventListener('click', function (event) {
+    event.preventDefault();
+    // additional actions you want to perform on button click
+  }); --}}
+</script>
 
 <style>
   .gradient-custom {
@@ -214,6 +300,6 @@
     background: -webkit-linear-gradient(to right, rgb(91, 216, 137), rgba(37, 117, 252, 1));
 
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, rgb(133, 206, 165), rgba(37, 117, 252, 1))
+    background: linear-gradient(to right, rgb(133, 206, 165), rgb(234, 221, 168))
   }
 </style>

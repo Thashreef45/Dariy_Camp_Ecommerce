@@ -9,7 +9,7 @@
   var ctx = document.getElementById('myChart')
   // eslint-disable-next-line no-unused-vars
   var myChart = new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: {
       labels: [
         'Sunday',
@@ -33,7 +33,7 @@
         lineTension: 0,
         backgroundColor: 'transparent',
         borderColor: '#007bff',
-        borderWidth: 4,
+        borderWidth: 1,
         pointBackgroundColor: '#007bff'
       }]
     },

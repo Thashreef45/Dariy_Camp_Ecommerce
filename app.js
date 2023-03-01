@@ -1,16 +1,17 @@
-const db = require('./config/dbconnect')
+require('./config/dbconnect')()
 const express = require('express')
 const hbs = require('express-handlebars')
 const session = require('express-session')
-const app = express()
-
+const handlebars = require('handlebars')
+require('dotenv').config()
 const logger = require('morgan')
-// const bodyParser = require('body-parser')
-
 const nocache = require('nocache')
 const cors = require('cors')
-require('dotenv').config()
-db();
+const app = express()
+const adminRoute = require('./routes/adminRoute')  
+const userRoute = require('./routes/userRoute')
+
+
 
 app.use(cors())
 app.use(nocache())
@@ -28,29 +29,12 @@ app.use(session({
 }))
 
 
-
 // For admin
-const adminRoute = require('./routes/adminRoute')
-app.use('/admin',adminRoute)
+app.use('/admin',adminRoute) 
 
 //For user routes
-const userRoute = require('./routes/userRoute')
 app.use('/', userRoute)
 
-
-// //Testin for ..fetch
-// const User = require('./Model/userModel')
-// const arryf = []
-
-// app.post('/hey',async(req,res)=>{
-// let {id,name} = req.body
-// console.log(req.body,'<--body');
-// arryf.unshift(name)
-// console.log(arryf,'array updated');
-// var da = await User.findOne({name:name},{email:1,_id:0})
-// console.log(da,'----');
-// })
-// /////
 
 //Layout 
 app.engine('hbs', hbs.engine({
@@ -64,7 +48,21 @@ app.engine('hbs', hbs.engine({
     // partialsDir: __dirname + '/views/partials'
 }));
 
-app.listen(3000, () => console.log('Server Started'))
+
+
+handlebars.registerHelper('ifeq', function (a, b, options) {
+    if (a == b) { return options.fn(this); }
+    return options.inverse(this);
+});
+
+handlebars.registerHelper('ifnoteq', function (a, b, options) {
+    if (a != b) { return options.fn(this); }
+    return options.inverse(this);
+});
+
+
+
+app.listen(process.env.PORT || 3000, () => console.log('Server Started'))
 
 
 

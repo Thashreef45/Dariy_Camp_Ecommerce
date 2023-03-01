@@ -43,6 +43,18 @@ const userSchema = new mongoose.Schema({
                 default : false
             }
         } 
+    ],
+    cart : [
+        {
+            productid : {
+                type : String,
+                required : true
+            },
+            count : {
+                type : Number,
+                required : 0
+            }
+        }
     ]
 })
 

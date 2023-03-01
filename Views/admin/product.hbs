@@ -1,152 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Dashboard Template · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
+
+    {{!-- 14 --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="/Public/styleSheet/dashboard.css" rel="stylesheet">
+</head>
+
 <body style="background-color: rgb(223, 203, 203);">
-    <center>
-        <div>
-            <div class="container pt-5 " style="display: flexbox;">
-                <div style="display: flex;">
-                    {{!-- search bar... --}}
-                    <form action="/admin/product/search" method="post" style="display: flex;">
-                        <input style="width: 50%;" name="search" type="text" id="search"
-                            class="form-control">&nbsp;&nbsp;
-                        <label class="form-label" for="search"></label>
-                        <input type="submit" value="Search" class="btn btn-primary btn-sm align-items-center">
-                    </form>
-                    {{!-- ...search bar end--}}
 
-                    {{!-- home and add product buttons --}}
-                    <div style="margin-left: 13%;">
-                        <div style="display:flex;">
-                            <form action="/admin/home" method="post">
-                                <input type="submit" value="Home" class="btn btn-secondary btn-md ">
-                            </form>
-                            &nbsp;&nbsp;&nbsp;
-                            <form action="/admin/addProduct">
-                                <input type="submit" value="Add Product" class="btn btn-success  ">
-                            </form>
-
-                            &nbsp;&nbsp;&nbsp;
-                            <form action="/admin/category" method="post">
-                                <input type="submit" value="Category" class="btn "
-                                    style="background-color: rgb(180, 137, 63); color: aliceblue;">
-                            </form>
-                        </div>
-                    </div>
-                    {{!-- home,add product and category buttons ...--}}
-
-                    <div>
-                        <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
-                    </div>
-
-                </div>
-
-            </div> <br>
-
-
-
-
-            <div class="container">
-                <table class="table table-light table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Product</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Rate</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Stock</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
-                            <th>Soft Delete</th>
-
-
-                        </tr>
-                    </thead>
-
-                    <body>
-                        {{#each arrayProducts}}
-                        <tr>
-                            <td><img src="../../routes/Public/uploadedimg/{{this.image}}" style="height:40px;"></td>
-                            <td>{{this.name}}</td>
-                            <td>{{this.unit}}</td>
-                            <td>₹{{this.rate}}</td>
-                            <td>{{this.category}}</td>
-                            <td>{{this.quantity}}</td>
-                            <td><a href="/admin/product/edit?id={{this._id}}">Edit</a></td>
-
-                            <td> <a  onclick="delProduct('{{this._id}}')" data-bs-toggle="modal" id="del" data-bs-target="#deleteproductModal" style="color: red;cursor:pointer;">Delete</a></td>
-
-                            {{#if this.status}}
-                            <td><a href="/admin/product/disable?id={{this._id}}">Disable</a></td>
-                            {{else}}
-                            <td><a href="/admin/product/disable?id={{this._id}}">Enable</a></td>
-                            {{/if}}
-
-                        </tr>
-                        {{/each}}
-                    </body>
-                </table>
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Dairy Camp</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {{!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        --}}
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <form action="/admin/logout" method="post">
+                    <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
+                        class="bg-dark text-primary nav-link px-3">
+                </form>
+                {{!-- <a class="nav-link px-3" href="">Sign out</a> --}}
             </div>
-
         </div>
-    </center>
+    </header>
 
+    <div class="container-fluid ">
+        <div class="row ">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mt-4">
+                            <a class="nav-link " aria-current="page" href="/admin/home">
+                                <span data-feather="home"></span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/category">
+                                <span data-feather="file"></span>
+                                Category
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/product">
+                                <span data-feather="shopping-cart"></span>
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users">
+                                <span data-feather="users"></span>
+                                Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/order-management">
+                                <span data-feather="clipboard"></span>
+                                Orders
+                            </a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/coupon">
+                                <span data-feather="slack"></span>
+                                Coupon
+                            </a>
+                        </li>
 
-    {{!-- Model --}}
-    <div class="modal fade" id="deleteproductModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/sales">
+                                <span data-feather="trending-up"></span>
+                                Sales Report
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to Delete this Product?
-                    <input type="hidden" id="delProduct">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </nav>
 
-                    <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmproductDelete()'
-                            id="delete-Button">Delete</button></a>
-                </div>
-            </div>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {{!-- <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1> --}}
+
+
+
+
+                    {{!-- <body style="background-color: rgb(223, 203, 203);"> --}}
+                        <center>
+                            <div>
+                                <div class="container pt-5 " style="display: flexbox;">
+                                    <div style="display: flex;">
+                                        {{!-- search bar... --}}
+                                        <form action="/admin/product/search" method="post" style="display: flex;">
+                                            <input style="width: 50%;" name="search" type="text" id="search"
+                                                class="form-control">&nbsp;&nbsp;
+                                            <label class="form-label" for="search"></label>
+                                            <input type="submit" value="Search"
+                                                class="btn btn-primary btn-sm align-items-center">
+                                        </form>
+                                        {{!-- ...search bar end--}}
+
+                                        {{!-- add product button --}}
+                                        <div style="margin-left: 13%;">
+                                            <div style="display:flex;">
+                                                {{!-- <form action="/admin/home" method="post">
+                                                    <input type="submit" value="Home" class="btn btn-secondary btn-md ">
+                                                </form>
+                                                &nbsp;&nbsp;&nbsp; --}}
+                                                <form action="/admin/addProduct">
+                                                    <input type="submit" value="Add Product" class="btn btn-success  ">
+                                                </form>
+
+                                                {{!-- &nbsp;&nbsp;&nbsp;
+                                                <form action="/admin/category" method="post">
+                                                    <input type="submit" value="Category" class="btn "
+                                                        style="background-color: rgb(180, 137, 63); color: aliceblue;">
+                                                </form> --}}
+                                            </div>
+                                        </div>
+                                        {{!-- home,add product and category buttons ...--}}
+
+                                        <div>
+                                            <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
+                                        </div>
+
+                                    </div>
+
+                                </div> <br>
+
+
+
+
+                                <div class="container">
+                                    <table class="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Product</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Rate</th>
+                                                <th scope="col">Category</th>
+                                                <th scope="col">Stock</th>
+                                                <th scope="col">Edit</th>
+                                                {{!-- <th scope="col">Delete</th> --}}
+                                                <th>Enable/Disable</th>
+
+
+                                            </tr>
+                                        </thead>
+
+                                        <body>
+                                            {{#each arrayProducts}}
+                                            <tr>
+                                                <td><img src="../../routes/Public/uploadedimg/{{this.image}}"
+                                                        style="height:40px;"></td>
+                                                <td>{{this.name}}</td>
+                                                <td>{{this.unit}}</td>
+                                                <td>₹{{this.rate}}</td>
+                                                <td>{{this.category}}</td>
+                                                <td>{{this.quantity}}</td>
+                                                <td><a href="/admin/product/edit?id={{this._id}}">Edit</a></td>
+
+                                                {{!-- <td> <a onclick="delProduct('{{this._id}}')"
+                                                        data-bs-toggle="modal" id="del"
+                                                        data-bs-target="#deleteproductModal"
+                                                        style="color: red;cursor:pointer;">Delete</a></td> --}}
+
+                                                {{#if this.status}}
+                                                <td><a class="btn btn-danger"
+                                                        href="/admin/product/disable?id={{this._id}}">Disable</a></td>
+                                                {{else}}
+                                                <td><a class="btn btn-success"
+                                                        href="/admin/product/disable?id={{this._id}}">Enable</a></td>
+                                                {{/if}}
+
+                                            </tr>
+                                            {{/each}}
+                                        </body>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </center>
+
+
+
+
+
+                        {{!-- Model --}}
+                        <div class="modal fade" id="deleteproductModal" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to Delete this Product?
+                                        <input type="hidden" id="delProduct">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+
+                                        <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmproductDelete()'
+                                                id="delete-Button">Delete</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- Model ends --}}
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                        <script>
+                            function delProduct(data) {
+                                document.getElementById('delProduct').value = data
+                            }
+                            function confirmproductDelete() {
+                                console.log("in comnfirm delete")
+                                const id = document.getElementById("delProduct").value
+                                console.log(id)
+                                fetch("/admin/product/delete", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({
+                                        id: id
+                                    })
+                                })
+                                    .then(response => {
+                                        console.log("in dollar")
+                                        $('#deleteproductModal').modal('hide')
+                                        console.log(response)
+                                    })
+                                    .then(data => {
+                                        location.reload()
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
+                                    });
+                            };
+
+                        </script>
+
+
+                    {{!-- </body> --}}
+
+
+
+
+            </main>
         </div>
     </div>
-    {{!-- Model ends --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        function delProduct(data) {
-            document.getElementById('delProduct').value = data
-        }
-        function confirmproductDelete() {
-            console.log("in comnfirm delete")
-            const id = document.getElementById("delProduct").value
-            console.log(id)
-            fetch("/admin/product/delete", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: id
-                })
-            })
-                .then(response => {
-                    console.log("in dollar")
-                    $('#deleteproductModal').modal('hide')
-                    console.log(response)
-                })
-                .then(data => {
-                    location.reload()
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        };
-
-    </script>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    {{!--
+    <script src="/Public/js/dashboard.js"></script> --}}
 </body>
+
+</html>

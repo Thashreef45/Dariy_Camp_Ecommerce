@@ -11,7 +11,7 @@
 
                 <div class="form-floating mb-2">
                     <div class="form-outline">
-                        <input type="file" name="productimage" class="form-control " accept="image/*">
+                        <input type="file"  name="productimage" id="productimage" class="form-control " accept="image/*">
                         {{!-- <label class="form-label" for="productimage"></label> --}}
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 {{!-- dropdown ends--}}
 
                 <div class="form-floating mb-2 ">
-                    <input type="name" name="productname" class="form-control" class="floatingInput"
+                    <input type="name" name="productname"  class="form-control" class="floatingInput"
                         placeholder="Product Name" required value="{{editProduct.name}}">
                     <label for="productname">Product Name</label>
                 </div>
@@ -63,5 +63,15 @@
             </form>
         </div>
     </div>
+
+    <script>
+        let imgfile = document.getElementById('productimage')
+        let fileName = document.getElementById('fileName')
+
+        imgfile.addEventListener('change',()=>{
+            const file = imgfile.editProduct[0]
+            fileName.innerHTML = file.image
+        })
+    </script>
 
 </body>

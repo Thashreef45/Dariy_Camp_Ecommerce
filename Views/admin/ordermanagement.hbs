@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Dashboard Template · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
+
+    {{!-- 14 --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="/Public/styleSheet/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Dairy Camp</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {{!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        --}}
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <form action="/admin/logout" method="post">
+                    <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
+                        class="bg-dark text-primary nav-link px-3">
+                </form>
+                {{!-- <a class="nav-link px-3" href="">Sign out</a> --}}
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid ">
+        <div class="row ">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mt-4">
+                            <a class="nav-link " aria-current="page" href="/admin/home">
+                                <span data-feather="home"></span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/category">
+                                <span data-feather="file"></span>
+                                Category
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/product">
+                                <span data-feather="shopping-cart"></span>
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users">
+                                <span data-feather="users"></span>
+                                Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/order-management">
+                                <span data-feather="clipboard"></span>
+                                Orders
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/coupon">
+                                <span data-feather="slack"></span>
+                                Coupon
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/sales">
+                                <span data-feather="trending-up"></span>
+                                Sales Report
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {{!-- <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1> --}}
+
+
+
+
+
+
+                    <body style="background-color: rgb(184, 211, 235);">
+                        {{!-- <div class="mt-5">
+                            <label for="">Normal</label>
+                            <input type="radio" id="normal" name="Scheduled">
+                            <label for="">Scheduled </label>
+                            <input type="radio" id="scheduled" name="Scheduled">
+                        </div> --}}
+                        <center>
+                            <div>
+
+                                <div class="mt-5">
+                                    <label for="">Normal</label>
+                                    <input type="radio" id="normal" name="Scheduled">
+                                    <label for="">Scheduled </label>
+                                    <input type="radio" id="scheduled" name="Scheduled">
+                                    &nbsp;&nbsp; |&nbsp;&nbsp;
+                                    <label for="">Normal (pending)</label>
+                                    <input type="radio" id="pnormal" name="Scheduled">
+                                    <label for="">Scheduled (pending)</label>
+                                    <input type="radio" id="pscheduled" name="Scheduled">
+                                </div>
+
+                                {{!-- <a href="/admin/home" class="mt-5 btn btn-primary">home</a> --}}
+
+                                <div class="container mt-3" id="normal-table">
+                                    <table class="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order Id</th>
+                                                <th scope="col">Products</th>
+                                                <th scope="col">Date</th>
+                                                {{!-- <th scope="col">Sheduled</th> --}}
+                                                <th scope="col">Payment</th>
+                                                <th scope="col">Status</th>
+                                                {{!-- <th scope="col">Type</th> --}}
+                                                {{!-- <th scope="col">Action</th> --}}
+                                            </tr>
+                                        </thead>
+
+                                        <body>
+                                            {{#each orders}}
+                                            <tr>
+
+                                                <td>{{this.orderId}}</td>
+                                                <td><a class="btn btn-secondary"
+                                                        href="/admin/admin-order-viewproducts?id={{this._id}}">View
+                                                        Details</a></td>
+                                                {{#each this.date}}
+                                                <td>{{this.orderdate}}</td>
+                                                {{!-- <td>{{this.this.shedule}}</td> --}}
+                                                {{/each}}
+                                                <td>{{this.paymentmethod}}</td>
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td class="text-secondary">{{this.status}}</td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td class="text-success">{{this.status}}</td>
+
+                                                {{/ifeq}}
+
+                                            </tr>
+                                            {{/each}}
+                                        </body>
+                                    </table>
+                                </div>
+                                {{!-- '''''' --}}
+
+
+                                {{!-- scheduled tabel --}}
+
+                                <div class="container mt-3" id="scheduled-table" style="display:none;">
+                                    <table class="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order Id</th>
+                                                <th scope="col">Products</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col">Sheduled</th>
+                                                <th scope="col">Payment</th>
+                                                <th scope="col">Status</th>
+                                                {{!-- <th scope="col">Type</th> --}}
+                                                {{!-- <th scope="col">Action</th> --}}
+                                            </tr>
+                                        </thead>
+
+                                        <body>
+                                            {{#each sOrders}}
+                                            <tr>
+
+                                                <td>{{this.orderId}}</td>
+                                                <td><a class="btn btn-secondary"
+                                                        href="/admin/admin-order-viewproducts?id={{this._id}}">View
+                                                        Details</a></td>
+
+                                                {{#each this.date}}
+                                                <td>{{this.orderdate}}</td>
+                                                <td>{{this.schedule}}</td>
+                                                {{/each}}
+                                                <td>{{this.paymentmethod}}</td>
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td class="text-secondary">{{this.status}}</td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td class="text-success">{{this.status}}</td>
+
+                                                {{/ifeq}}
+
+
+                                                {{#ifeq this.status 'Cancelled'}}
+                                                <td>
+                                                    <p class="text-danger"> Cancelled</p>
+                                                </td>
+                                                {{/ifeq}}
+
+                                            </tr>
+                                            {{/each}}
+                                        </body>
+                                    </table>
+                                </div>
+
+                                {{!-- pending normal table --}}
+
+                                <div class="container mt-3" id="pnormal-table" style="display:none;">
+                                    {{#if pendingOrders}}
+                                    <table class="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order Id</th>
+                                                <th scope="col">Products</th>
+                                                <th scope="col">Date</th>
+                                                {{!-- <th scope="col">Sheduled</th> --}}
+                                                <th scope="col">Payment</th>
+                                                <th scope="col">Status</th>
+                                                {{!-- <th scope="col">Type</th> --}}
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+
+                                        <body>
+                                            {{#each pendingOrders}}
+                                            <tr>
+
+                                                <td>{{this.orderId}}</td>
+                                                <td><a class="btn btn-secondary"
+                                                        href="/admin/admin-order-viewproducts?id={{this._id}}">View
+                                                        Details</a></td>
+                                                {{#each this.date}}
+                                                <td>{{this.orderdate}}</td>
+                                                {{!-- <td>{{this.this.shedule}}</td> --}}
+                                                {{/each}}
+                                                <td>{{this.paymentmethod}}</td>
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td class="text-secondary">{{this.status}}</td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td class="text-success">{{this.status}}</td>
+
+                                                {{/ifeq}}
+
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td>
+                                                    <p class="text-success"></p>
+                                                </td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td><a href="/admin/admin-product-delevered?id={{this._id}}"
+                                                        class="btn btn-primary">Delivery now</a></td>
+                                                {{/ifeq}}
+
+                                            </tr>
+                                            {{/each}}
+                                        </body>
+                                    </table>
+                                    {{else}}
+                                    <div style="display:flex ;justify-content: center;">
+                                        <h4 class="text-dark mt-5">No Pending orders</h4>
+                                    </div>
+                                    {{/if}}
+                                </div>
+
+
+
+
+
+
+
+
+                                {{!-- pending scheduled table --}}
+
+                                <div class="container mt-3" id="pscheduled-table" style="display:none;">
+                                    {{#if sPendingOrders}}
+                                    <table class="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Order Id</th>
+                                                <th scope="col">Products</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col">Sheduled</th>
+                                                <th scope="col">Payment</th>
+                                                <th scope="col">Status</th>
+                                                {{!-- <th scope="col">Type</th> --}}
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+
+                                        <body>
+                                            {{#each sPendingOrders}}
+                                            <tr>
+
+                                                <td>{{this.orderId}}</td>
+                                                <td><a class="btn btn-secondary"
+                                                        href="/admin/admin-order-viewproducts?id={{this._id}}">View
+                                                        Details</a></td>
+
+                                                {{#each this.date}}
+                                                <td>{{this.orderdate}}</td>
+                                                <td>{{this.schedule}}</td>
+                                                {{/each}}
+                                                <td>{{this.paymentmethod}}</td>
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td class="text-secondary">{{this.status}}</td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td class="text-success">{{this.status}}</td>
+
+                                                {{/ifeq}}
+
+
+                                                {{#ifeq this.status 'Cancelled'}}
+                                                <td>
+                                                    <p class="text-danger"> Cancelled</p>
+                                                </td>
+                                                {{/ifeq}}
+
+
+
+                                                {{#ifeq this.status 'Delivered'}}
+                                                <td>
+                                                    <p class="text-success"></p>
+                                                </td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Cancelled'}}
+                                                <td>
+                                                    <p class="text-success"></p>
+                                                </td>
+                                                {{/ifeq}}
+
+                                                {{#ifeq this.status 'Order placed'}}
+                                                <td><a href="/admin/admin-product-delevered?id={{this._id}}"
+                                                        class="btn btn-primary">Delivery now</a></td>
+                                                {{/ifeq}}
+
+                                            </tr>
+                                            {{/each}}
+                                        </body>
+                                    </table>
+                                    {{else}}
+                                    <div style="display:flex ;justify-content: center;">
+                                        <h4 class="text-dark mt-5">No Pending Scheduled orders</h4>
+                                    </div>
+                                    {{/if}}
+                                </div>
+
+
+
+
+
+
+
+
+
+
+                            </div>
+                        </center>
+
+
+                    </body>
+
+
+
+
+
+
+            </main>
+        </div>
+    </div>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    {{!--
+    <script src="/Public/js/dashboard.js"></script> --}}
+
+
+    <script>
+
+        //radio button for delivered
+        let rNormal = document.getElementById('normal')
+        let rScheduled = document.getElementById('scheduled')
+        //delivered table 
+        let normal = document.getElementById('normal-table')
+        let scheduled = document.getElementById('scheduled-table')
+        // radio button for pending  task
+        let rpNormal = document.getElementById('pnormal')
+        let rpScheduled = document.getElementById('pscheduled')
+        //pending order table
+        let pNormal = document.getElementById('pnormal-table')
+        let pScheduled = document.getElementById('pscheduled-table')
+
+        // for delvered (scheduled and normal)
+        rNormal.addEventListener('change', () => {
+            normal.style.display = 'block'
+            scheduled.style.display = 'none'
+            pNormal.style.display = 'none'
+            pScheduled.style.display = 'none'
+        })
+        rScheduled.addEventListener('change', () => {
+            scheduled.style.display = 'block'
+            normal.style.display = 'none'
+            pNormal.style.display = 'none'
+            pScheduled.style.display = 'none'
+        })
+
+        // event listner for pending (scheduled and normal)
+        rpNormal.addEventListener('change', () => {
+            scheduled.style.display = 'none'
+            normal.style.display = 'none'
+            pNormal.style.display = 'block'
+            pScheduled.style.display = 'none'
+        })
+        rpScheduled.addEventListener('change', () => {
+            scheduled.style.display = 'none'
+            normal.style.display = 'none'
+            pNormal.style.display = 'none'
+            pScheduled.style.display = 'block'
+        })
+    </script>
+</body>
+
+</html>

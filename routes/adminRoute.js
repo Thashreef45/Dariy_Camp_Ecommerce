@@ -1,22 +1,13 @@
 const express = require('express')
 const admin_route = express()
-const adminController = require('../Controllers/adminController')
+const adminController = require('../controllers/adminController')
 const multer = require('multer')
 const path = require('path')
-
+const {upload} = require('../helpers/multer')
 
 //Multer 
 
-const storage = multer.diskStorage({
-  destination:function(req,file,callback){
-      callback(null, path.join(__dirname,'/Public/uploadedimg'));
-  },
-  filename:function(req,file,callback){
-      const name = Date.now()+'-'+file.originalname;
-      callback(null,name);
-  }
-})
-const upload = multer({storage:storage});
+
 
 
 admin_route.set('view engine','hbs')
@@ -42,8 +33,23 @@ admin_route.post('/update-edited-Product',upload.single('productimage'),adminCon
 admin_route.post('/category',adminController.categoryManagement)
 admin_route.get('/category',adminController.categoryManagement)
 admin_route.post('/addCategory',adminController.addCategory)
-// admin_route.get('/',adminController.categoryManagement)
+
+// admin_route.get('/',adminController.categoryManagement) 
 admin_route.post('/delete-category',adminController.deletecategory)
+admin_route.get('/order-management',adminController.orderManagement)
+admin_route.get('/admin-product-delevered',adminController.adminProductDelevered)
+admin_route.get('/coupon',adminController.Coupon)
+admin_route.post('/add-coupon',adminController.addCoupon)
+admin_route.post('/coupon-status',adminController.couponStatusUpdate)
+admin_route.get('/admin-order-viewproducts',adminController.adminOrderViewproducts)
+admin_route.get('/sales',adminController.salesReport)
+admin_route.get('/admin-home-data',adminController.adminData)
+
+admin_route.get('/hi',(req,res)=>{
+    res.render('hlo')
+})
+
+
 
 
 

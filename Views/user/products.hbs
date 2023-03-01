@@ -99,7 +99,7 @@
                 {{/if}}
                 <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
                 {{#if isLogin}}
-                <a href="/userprofile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
+                <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
                 {{/if}}
             </div>
         </div>
@@ -173,7 +173,6 @@
             {{!-- Third Row --}}
             {{!-- Fourth Row --}}
 
-            {{!-- hijhele --}}
             <div class="container">
 
                 <div class="row gx-4">
@@ -185,8 +184,16 @@
                             <div class="position-relative">
                                 <img class="img-fluid" src="../../routes/Public/uploadedimg/{{this.image}}" alt="">
                                 <div class="product-overlay">
-                                    <a class="btn btn-square btn-secondary rounded-circle m-1" href=""><i
-                                            class="bi bi-cart"></i></a>
+                                    {{#if this.inCart}}
+                                    <a href="/cart" class="text-info" style="font-family: sans-serif;">Go to cart</a>
+                                    <a class="btn btn-square btn-secondary rounded-circle m-1" href="/cart">
+                                    <i class="bi bi-cart"></i></a>
+                                    {{else if this.quantity}}
+                                    <a class="btn btn-square btn-secondary rounded-circle m-1" href="/addto-cart?id={{this._id}}">
+                                    <i class="bi bi-cart"></i></a>
+                                    {{else }}
+                                    <h5 class="text-danger" style="font-family: sans-serif;">Out of stock</h5>
+                                    {{/if}}
                                 </div>
                             </div>
                             <div class="text-center p-4">

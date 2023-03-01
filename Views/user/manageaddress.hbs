@@ -21,64 +21,87 @@
       {{/if}}
       <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
       {{#if isLogin}}
-      <a href="/userprofile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
+      <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
       {{/if}}
     </div>
   </div>
 </nav>
 <!-- Navbar End -->
+<br>
 
 
+<body style="background-color: #dce3f0;">
+  <div class="container ">
+    <div class="row ">
+      {{#if addressLength}}
+      
+      <div class="mx-1">
+        <a href="/add-address" type="button" class="btn shadow data-mdb-ripple-color='dark'"
+          style="background-color:#386BC0;color: aliceblue;">
+          Add address +</a>
+      </div>
+      {{/if}}
 
-<div class="container ">
-  <div class="row ">
-    {{#each address}}
-    <div class="col-sm-6 mt-2">
-      <div class="card " style="background-color: #b6daaf;">
-        <div class="card-body">
-          <div style="display: flex;">
-            <h5 class="card-title text-dark">{{this.address}}</h5>
+
+      {{#if addressLength}}
+      {{#each address}}
+      <div class="col-sm-6 mt-2">
+        <div class="card " style="background-color: #a5b8d8;">
+          <div class="card-body">
+            <div style="display: flex;">
+              <h5 class="card-title text-dark">{{this.address}}</h5>
+              {{#if this.default}}
+              <a class=" fa fa-check-square text-dark" style="margin-left:7rem ;"> Default Address</a>
+              {{/if}}
+            </div>
+            <p class="card-text text-dark">{{this.pincode}},{{this.place}},{{this.state}}</p>
+
+            <a href="/edit-address?id={{this._id}}" class="btn btn-dark">Edit</a>
             {{#if this.default}}
-            <a class=" fa fa-check-square text-dark" style="margin-left:7rem ;"> Default Address</a>
+            {{else}}
+            <a onclick="delProduct('{{this._id}}')" data-bs-toggle="modal" id="del" data-bs-target="#deleteproductModal"
+              style="color: rgb(255, 255, 255);cursor:pointer;" class="btn btn-danger">Delete</a>
             {{/if}}
+
           </div>
-          <p class="card-text text-dark">{{this.pincode}},{{this.place}},{{this.state}}</p>
+        </div>
+      </div>
+      {{/each}}
+      {{else}}
+      <div style="display: flex;justify-content: center;">
+        <p style="margin-top: 8rem;">No Address</p>
+      </div>
+      <div style="display: flex;justify-content: center;">
+          <a href="/add-address" type="button" class="btn shadow"
+          style="background-color:#386BC0;color: aliceblue;">
+          Add address +</a>
+      </div>
+      {{/if}}
+    </div>
+  </div>
 
-          <a href="/edit-address?id={{this._id}}" class="btn btn-dark">Edit</a>
-          {{#if this.default}}
-          {{else}}
-          <a onclick="delProduct('{{this._id}}')" data-bs-toggle="modal" id="del" data-bs-target="#deleteproductModal"
-            style="color: rgb(255, 255, 255);cursor:pointer;" class="btn btn-danger">Delete</a>
-          {{/if}}
 
+  {{!-- Model --}}
+  <div class="modal fade" id="deleteproductModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to Delete this Address?
+          <input type="hidden" id="delProduct">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+          <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmproductDelete()'
+              id="delete-Button">Delete</button></a>
         </div>
       </div>
     </div>
-    {{/each}}
   </div>
-</div>
-
-
-{{!-- Model --}}
-<div class="modal fade" id="deleteproductModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to Delete this Address?
-        <input type="hidden" id="delProduct">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-        <a> <button class="btn btn-danger mt-1 mb-1" onclick='confirmproductDelete()'
-            id="delete-Button">Delete</button></a>
-      </div>
-    </div>
-  </div>
-</div>
+</body>
 {{!-- Model ends --}}

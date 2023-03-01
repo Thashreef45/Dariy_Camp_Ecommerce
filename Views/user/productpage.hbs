@@ -21,7 +21,7 @@
             {{/if}}
             <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
             {{#if isLogin}}
-            <a href="/userprofile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
+            <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
             {{/if}}
         </div>
     </div>
@@ -40,9 +40,10 @@
                         <div class="images p-3 ">
                             <div class="text-center p-4"> <img id="main-image"
                                     src="/routes/Public/uploadedimg/{{productName.image}}" width="250" /> </div>
-                            {{!-- <div class="thumbnail text-center"> <img onclick="change_image(this)"
-                                    src="" width="70"> <img onclick="change_image(this)"
-                                    src="" width="70"> </div> --}}
+                            <div class="thumbnail text-center"> <img onclick="change_image(this)"
+                                    src="/routes/Public/uploadedimg/{{productName.image}}" width="70"> <img onclick="change_image(this)"
+                                    src="/routes/Public/uploadedimg/1674895821574-product-2.jpg" width="70">  <img onclick="change_image(this)"
+                                    src="/routes/Public/uploadedimg/1674896594225-product-10.jpg" width="70"></div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -77,10 +78,18 @@
                                 </label> <label class="radio"> <input type="radio" name="size" value="XXL">
                                     <span>XXL</span> </label>
                             </div> --}}
-                            <div class="cart mt-4 align-items-center"> <button
-                                    class="btn btn-danger text-uppercase mr-2 px-4">Add to cart</button> <i {{!--
-                                    class="fa fa-heart text-muted"></i> <i class="fa fa-share-alt text-muted"></i> --}}
-                            </div>
+                            
+                            <div class="cart mt-4 align-items-center"> 
+                                {{#if productName.inCart}}
+                                <a href='/cart' class="btn btn-danger text-uppercase mr-2 px-4 shadow">Go to Cart </a> 
+                                {{else if productName.quantity}}
+                                <a href='/addto-cart?id={{productName._id}}' class="btn btn-danger text-uppercase mr-2 px-4 shadow">Add to cart</a> 
+                                {{else}}
+                                <h4 class="text-danger" style="font-family: serif;">This product is out of stock</h4>
+                                {{/if}}
+                             </div>
+                            
+
                         </div>
                     </div>
                 </div>
@@ -170,9 +179,18 @@
 </style>
 <script>
     function change_image(image) {
+        console.log('--hi')
         var container = document.getElementById("main-image");
         container.src = image.src;
     }
     document.addEventListener("DOMContentLoaded", function (event) {
     });
+
+
+    
+
+
+
+
+    
 </script>

@@ -1,9 +1,5 @@
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', true);
-
-
-async function mongoConnect (){
-    mongoose.connect(process.env.DB_CONNECT)
+module.exports = function mongoConnect (){
+    mongoose.connect('mongodb://127.0.0.1:27017/Week7')
 }
-
-module.exports = mongoConnect

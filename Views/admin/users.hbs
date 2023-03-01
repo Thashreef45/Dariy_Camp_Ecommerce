@@ -1,58 +1,217 @@
-<body style="background-color: rgb(197, 203, 179);">
-    <center>
-        <div>
-            {{!-- search bar... --}}
-            <div class="container pt-5">
-                <form action="/admin/users/search" method="post">
-                    <div style="display: flex;">
-                        <input style="width: 20%;" name="search" type="text" id="search"
-                            class="form-control" />&nbsp;&nbsp;
-                        <label class="form-label" for="search"></label>
-                        <input type="submit" value="Search" class="btn btn-primary btn-md align-items-center">
-                    </div>
+
+
+
+
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <title>Dashboard Template · Bootstrap v5.0</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
+
+    {{!-- 14 --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="/Public/styleSheet/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Dairy Camp</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {{!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+        --}}
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                    
+                <form action="/admin/logout" method="post">
+                    <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
+                        class="bg-dark text-primary nav-link px-3">
                 </form>
-            </div>
-
-            {{!-- ...search bar end--}} <br>
-
-
-            <div class="container">
-                <table class="table table-light table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Block/Unblock</th>
-                        </tr>
-                    </thead>
-
-                    <body>
-                        {{#each userArray}}
-                        <tr>
-                            <td>{{this.name}}</td>
-                            <td>{{this.email}}</td>
-                            {{#if this.status}}
-                            <td><a href="/admin/status?id={{this._id}}" style="color: red;">Block</a></td>
-                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
-                            {{else}}
-                            <td><a href="/admin/status?id={{this._id}}" style="color: green;">Unblock</a></td>
-                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
-                            {{/if}}
-                        </tr>
-                        {{/each}}
-                    </body>
-                </table>
-            </div>
-
-            <div>
-                <div>
-                    <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
-                </div>
-                <form action="/admin/home" method="post">
-                    <input type="submit" value="Home" class="btn btn-primary btn-md align-items-center">
-                </form>
+                {{!-- <a class="nav-link px-3" href="">Sign out</a> --}}
             </div>
         </div>
+    </header>
 
-    </center>
+    <div class="container-fluid ">
+        <div class="row ">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item mt-4">
+                            <a class="nav-link " aria-current="page" href="/admin/home">
+                                <span data-feather="home"></span>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/category">
+                                <span data-feather="file"></span>
+                                Category
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/admin/product">
+                                <span data-feather="shopping-cart"></span>
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/users">
+                                <span data-feather="users"></span>
+                                Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/order-management">
+                                <span data-feather="clipboard"></span>
+                                Orders
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/coupon">
+                                <span data-feather="slack"></span>
+                                Coupon
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/sales">
+                                <span data-feather="trending-up"></span>
+                                Sales Report
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {{!-- <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">User Management</h1> --}}
+
+
+
+
+
+
+
+                    <center>
+                        <div>
+                            {{!-- search bar... --}}
+                            <div class="container pt-5" style="display: flex;">
+                                <form action="/admin/users/search" method="post">
+                                    <div style="display: flex;">
+                                        <input style="width: 60%;" name="search" type="text" id="search"
+                                            class="form-control" />&nbsp;&nbsp;
+                                        <label class="form-label" for="search"></label>
+                                        <input type="submit" value="Search"
+                                            class="btn btn-primary btn-md align-items-center">
+                                    </div>
+                                </form>
+
+
+                            </div>
+
+                            {{!-- ...search bar end--}} <br>
+
+
+                            <div class="container">
+                                <table class="table table-primary table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Block/Unblock</th>
+                                        </tr>
+                                    </thead>
+
+                                    <body>
+                                        {{#each userArray}}
+                                        <tr>
+                                            <td>{{this.name}}</td>
+                                            <td>{{this.email}}</td>
+                                            {{#if this.status}}
+                                            <td><a class="btn btn-danger" href="/admin/status?id={{this._id}}">Block</a>
+                                            </td>
+                                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
+                                            {{else}}
+                                            <td><a class="btn btn-success"
+                                                    href="/admin/status?id={{this._id}}">Unblock</a></td>
+                                            {{!-- <input type="hidden" name="id" value="{{this._id}}"> --}}
+                                            {{/if}}
+                                        </tr>
+                                        {{/each}}
+                                    </body>
+                                </table>
+                            </div>
+
+                            <div>
+                                <div>
+                                    <p style="color: rgb(97, 97, 97);">{{errMsg}}</p>
+                                </div>
+                                {{!-- <form action="/admin/home" method="post">
+                                    <input type="submit" value="Home" class="btn btn-primary btn-md align-items-center">
+                                </form> --}}
+                            </div>
+                        </div>
+
+                    </center>
+
+
+
+
+
+
+            </main>
+        </div>
+    </div>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+        crossorigin="anonymous"></script>
+    {{!--
+    <script src="/Public/js/dashboard.js"></script> --}}
 </body>
+
+</html>
