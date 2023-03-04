@@ -10,6 +10,10 @@ const productSchema = mongoose.Schema({
         type : String,
         require : true   
     },
+    images : {
+        type : Array,
+        require : true
+    },
     rate : {
         type : Number,
         required : true

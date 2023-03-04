@@ -138,13 +138,18 @@
                                     aria-required="true">
                                     <h2 class="text-center">ADD PRODUCT</h2><br>
 
+                                    {{!-- Image section starts --}}
+
                                     <div class="form-floating mb-2">
                                         <div class="form-outline">
                                             <input type="file" name="productimage" class="form-control "
-                                                accept="image/*" />
+                                                accept="image/*" / multiple>
                                             {{!-- <label class="form-label" for="productimage"></label> --}}
                                         </div>
                                     </div>
+                                    
+                                    {{!-- Image section ends --}}
+
 
                                     <select name="category" class="form-select mb-2"
                                         aria-label="Default select example">

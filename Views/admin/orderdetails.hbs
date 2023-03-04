@@ -37,7 +37,7 @@
                                     <div class="row">
                                         <div class="col-md-2">
                                             <img style="width: 130%;border-radius: 5px;"
-                                                src="../../routes/Public/uploadedimg/{{this.image}}" class="img-fluid"
+                                                src="../../Public/img/uploaded-images/{{this.image}}" class="img-fluid"
                                                 alt="Phone">
                                             {{!-- <p>{{this.orderId}}</p> --}}
                                         </div>
@@ -70,10 +70,17 @@
                                         <p>{{address}} </p>
                                         <p style="color: blue;">PAYMENT METHOD :</p>
                                         <p>{{paymentmethod}}</p>
-                                        <p style="color: blue;">DELEVERY METHOD : </p>
-                                        <p>{{deleveryMethod}}</p>
+                                        <p style="color: blue;">DELIVERY METHOD : </p>
+                                        <p>{{deliveryMethod}}</p>
                                         <p style="color: blue;">USER NAME : </p>
                                         <p>{{userName}}</p>
+                                        {{#if orderData.0.couponused}}
+                                        <p style="color: blue;">USED COUPON : </p>
+                                        <p>{{coupon}}</p> 
+
+                                        <p style="color: blue;">ACTUAL PRICE : </p>
+                                        <p>{{actualPrice}}</p> 
+                                        {{/if}}
                                     </div>
 
                                     <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
@@ -95,7 +102,7 @@
                                                 <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
                                             </div>
 
-                                            {{#ifeq deleverymethod 'scheduled'}}
+                                            {{#ifeq deliverymethod 'scheduled'}}
                                             <center>
                                                 <div class="mt-2"><a class="btn btn-danger"
                                                         href="/cancel-order?id={{this._id}}">Cancel order</a></div>

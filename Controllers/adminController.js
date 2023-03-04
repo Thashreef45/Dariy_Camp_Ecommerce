@@ -7,12 +7,11 @@ const time = require('moment')
 const couponModel = require('../Model/couponmodel')
 const { ObjectId } = require('mongodb')
 const User = require('../Model/userModel')
-
-
-
+const Category = require('../Model/categoryModel')
+const e = require('express')
 
 let userArray // Storing users collection 
-let categoryArray //Storin category collection
+let categoryArray //Storin category collection 
 let arrayProducts
 let searched = false
 
@@ -53,34 +52,92 @@ const adminHome = async (req, res) => {
 
 }
 const adminData = async (req, res) => {
-    console.log(req.body,'<<from fetch admin side 53');
-    let Orders = await orderModel.find().lean()
 
-    let products = await productModel.find({}, { name: 1, _id: 0 }).lean()
-
-    products.forEach((element) => {
-        element.count = 0
-        Orders.forEach((item) => {
-            item.product.forEach((prd) => {
-                if (prd.name == element.name) {
-                    element.count += prd.quantity;
-                }
+    try {
+        let Orders = await orderModel.find({status:'Delivered'}).lean()
+        let products = await productModel.find({}, { name: 1,category:1, _id: 0 }).lean()
+    
+        let paymentCount = []
+        let cod = 0
+        let razor = 0
+        let payements = Orders.forEach((element)=>{
+            if(element.paymentmethod == 'cod'){ cod ++ }
+            else{razor++}
+        })
+        paymentCount.push(cod,razor)
+        products.forEach((element) => {
+            element.count = 0
+            Orders.forEach((item) => {
+                item.product.forEach((prd) => {
+                    if (prd.name == element.name) {
+                        element.count += prd.quantity;
+                    }
+                })
             })
         })
-    })
-
-    let names = []
-    let counts = []
-    products.forEach(({ count, name }) => {
-        if (count) {
-            names.push(name)
-            counts.push(count)
+    
+        let counts = []
+        let categories = await categoryModel.find({},{_id:0,category:1}).lean()
+    
+        
+    
+        categories.forEach((element)=>{
+            element.count = 0
+            products.forEach((val)=>{
+                if(element.category == val.category){
+                    element.count  += val.count
+                }
+                
+            })
+        })
+    
+        categories = categories.map((val)=>{
+            counts.push(val.count)
+            return val.category
+        })
+    
+    
+        //weekly sales data 
+        let sales = await orderModel.find({status:'Delivered'}).lean()
+        let date
+        let dateArray = []
+        let weeklySales = []
+        for(let i = 0 ;i < 7 ; i++){
+            date = new Date()
+            date.setDate(date.getDate()-i)
+            dateArray.push(date)
         }
-    })
-    res.json({
-        names,
-        counts
-    })
+    
+        dateArray.forEach((element)=>{
+            let sum = 0
+            sales.forEach((val)=>{
+                let date1 = time(val.date[0].orderdate).format('DD-MM-YYYY')
+                let date2 = time(element).format('DD-MM-YYYY')
+                if(date1 == date2){
+                    sum+= val.total
+                }
+            })
+            weeklySales.push(sum)
+        })
+    
+        dateArray = dateArray.map((date)=>{
+           return time(date).format('DD-MM-YYYY')
+        })
+        dateArray.reverse()
+        weeklySales.reverse()
+    
+    
+        res.json({
+            counts,
+            categories,
+            paymentCount,
+    
+            dateArray,
+            weeklySales,
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const userManagement = async (req, res) => {
@@ -149,8 +206,7 @@ const userStatusManage = async (req, res) => {
         let isBlocked = await userModel.findById({ _id: uId })
         if (isBlocked.status) {
             isBlocked = await userModel.updateOne({ email: isBlocked.email }, { status: false })
-        }
-        else {
+        } else {
             isBlocked = await userModel.updateOne({ email: isBlocked.email }, { status: true })
         }
         setUserCollection()
@@ -213,10 +269,16 @@ const editProduct = async (req, res) => {
     res.render('editproduct', { categoryArray, editProduct })
 }
 const updateEditedProduct = async (req, res) => {
+
+    let images = req.files.map((file)=>{
+        return file.filename
+    })
+    console.log(images,'276  admin image section')
     let editProduct = await productModel.updateOne({ _id: req.query.id },
         {
             $set: {
-                name: req.body.productname, category: req.body.category, image: req.file.filename,
+                name: req.body.productname, category: req.body.category, image: images[0],
+                images : images,
                 rate: req.body.productprice, unit: req.body.producunit, quantity: req.body.productquantity,
                 description: req.body.productdescription
             }
@@ -247,8 +309,16 @@ const addProduct = async (req, res) => {
 }
 
 const updateProduct = async (req, res) => {
+
+    let images = req.files.map((file)=>{
+       return file.filename
+    })
+
+
+
     const newProduct = new productModel({
-        image: req.file.filename,
+        image: images[0],
+        images : images,
         name: req.body.productname,
         unit: req.body.producunit,
         rate: req.body.productprice,
@@ -257,6 +327,17 @@ const updateProduct = async (req, res) => {
         description: req.body.productdescription
     })
     const productSave = newProduct.save()
+
+    // const newProduct = new productModel({
+    //     image: req.file.filename,
+    //     name: req.body.productname,
+    //     unit: req.body.producunit,
+    //     rate: req.body.productprice,
+    //     quantity: req.body.productquantity,
+    //     category: req.body.category,
+    //     description: req.body.productdescription
+    // })
+    // const productSave = newProduct.save()
     // res.redirect('/admin/product')
 }
 
@@ -308,12 +389,12 @@ const deletecategory = async (req, res) => {
 }
 
 const orderManagement = async (req, res) => {
-    
-    let orders = await orderModel.find({deleverymethod : 'normal',status:{$ne:'Order placed'}}).lean() 
-    let sOrders = await orderModel.find({deleverymethod : 'scheduled',status:{$ne:'Order placed'}}).lean()
 
-    const pendingOrders = await orderModel.find({deleverymethod : 'normal',status:'Order placed'}).lean()
-    const sPendingOrders = await orderModel.find({deleverymethod : 'scheduled',status:'Order placed'}).lean()
+    let orders = await orderModel.find({deliverymethod : 'normal',status:{$ne:'Order placed'}}).lean() 
+    let sOrders = await orderModel.find({deliverymethod : 'scheduled',status:{$ne:'Order placed'}}).lean()
+
+    const pendingOrders = await orderModel.find({deliverymethod : 'normal',status:'Order placed'}).lean()
+    const sPendingOrders = await orderModel.find({deliverymethod : 'scheduled',status:'Order placed'}).lean()
 
     orders.forEach((val) => {
         val.date[0].orderdate = time(val.date[0].orderdate).format('DD-MM-YYYY')
@@ -353,13 +434,23 @@ const adminOrderViewproducts = async (req, res) => {
         return val.id
     })
 
+    
+
     let subTotal = orderData[0].total
-    let deleveryMethod = orderData[0].deleverymethod.toUpperCase()
+    let deliveryMethod = orderData[0].deliverymethod.toUpperCase()
     let paymentmethod = orderData[0].paymentmethod.toUpperCase()
     let orderId = orderData[0].orderId
     let address = Object.values(orderData[0].address[0])
     address = address.slice(0, 4)
     let userId = orderData[0].userId
+    let actualPrice
+    let coupon
+    if (orderData[0].couponused) {
+        coupon = orderData[0].coupon[0].name
+        actualPrice = subTotal
+        subTotal = ((100 - orderData[0].coupon[0].offer) * subTotal) / 100
+
+    }
 
     //Taking user name
     let userName = await User.findOne({_id:userId},{_id:0,name:1})
@@ -373,7 +464,8 @@ const adminOrderViewproducts = async (req, res) => {
 
     console.log(productData, '<<797')
     res.render('orderdetails', {
-        productData, paymentmethod, deleveryMethod, subTotal, orderId, address, orderData, userId,userName
+        productData, paymentmethod, deliveryMethod, subTotal, orderId,
+         address, orderData, userId,userName,actualPrice,coupon
     })
 
     //res.render('orderdetails')

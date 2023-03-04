@@ -62,6 +62,7 @@
                         {{/each}}
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (RS)</span>
+                            <Strong><del id="oldTotal"></del></Strong>
                             <strong id="total">{{Total}}</strong>
                             <input type="hidden" id="subTotal" value="{{Total}}">
                         </li>
@@ -99,7 +100,7 @@
                             <label class="custom-control-label" for="debit">Razor pay</label>
                         </div>
                         <hr class="mb-4">
-                        <h4 class="mb-3">Delevery Method</h4>
+                        <h4 class="mb-3">Delivery Method</h4>
 
                         <div class="custom-control custom-radio">
                             <input id="sheduled" name="deliveryMethod" type="radio" class="custom-control-input"
@@ -170,6 +171,7 @@
     console.log(subtotal, '170')
     let totalAmount = subtotal
     let gtotal = subtotal * 100
+    let  oldTotal = document.getElementById('oldTotal')
     let couponused = false
     let promocode 
     let promoOffer
@@ -280,8 +282,9 @@
             document.getElementById('scsMsg').innerHTML = 'Coupon Applied'
             let Total = document.getElementById('subTotal').value
             let Subtotal = Number(Total)
-            response = 100 - response
+            oldTotal.innerHTML = Subtotal
             promoOffer = response
+            response = 100 - response
             Subtotal = Subtotal * (response / 100)
             console.log(Subtotal, '292')
             document.getElementById('total').innerHTML = Subtotal
@@ -289,6 +292,8 @@
             document.getElementById('subTotal').value = Subtotal
 
             document.getElementById('subTotal').setAttribute('value', Subtotal)
+            let newTotal = document.getElementById('subTotal').value
+            gtotal = newTotal * 100
             couponused = true
         }
     }
@@ -338,9 +343,9 @@
 
 
         const paymentMethod = Object.values(document.getElementsByName('paymentMethod')).filter((val) => val.checked ? val : '')[0].value
-        const deleveryMethod = Object.values(document.getElementsByName('deliveryMethod')).filter((val) => val.checked ? val : '')[0].value
+        const deliveryMethod = Object.values(document.getElementsByName('deliveryMethod')).filter((val) => val.checked ? val : '')[0].value
         let checkOutData = []
-        console.log(deleveryMethod, paymentMethod, date)
+       
 
         for (let i = 0; i < length; i++) {
             products.push(document.getElementsByName('name')[i].value)
@@ -361,7 +366,7 @@
             addressid: address,
             subtotal: subtotal,
             paymentMethod: paymentMethod,
-            deleveryMethod: deleveryMethod,
+            deliveryMethod: deliveryMethod,
             couponused : couponused,
             promocode : promocode,
             offer : promoOffer

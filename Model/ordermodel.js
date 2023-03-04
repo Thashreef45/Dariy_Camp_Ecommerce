@@ -42,21 +42,21 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: true,
         default: 'Order placed'
-    }, 
-    deleverymethod: {
+    },
+    deliverymethod: {
         type: String,
         required: true
     },
     couponused: {
-        type : Boolean,
-        default : false
+        type: Boolean,
+        default: false
     },
-    coupon :[{
-        name : {
-            type : String
+    coupon: [{
+        name: {
+            type: String
         },
-        offer : {
-            type : Number
+        offer: {
+            type: Number
         }
     }]
 })
