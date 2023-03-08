@@ -48,6 +48,9 @@ user_route.get('/my-oders',isLogged, userController.myOrders)
 user_route.get('/cancel-order',isLogged, userController.cancelOrder)
 user_route.post('/coupon-check',userController.couponCheck)
 user_route.get('/myorders-details',userController.myordersDetails) 
+user_route.post('/invoice',userController.invoice) 
+
+
 
 user_route.post('/create/orderId', userController.ordergen)
 user_route.post('/api/payment/verify', userController.siggen)

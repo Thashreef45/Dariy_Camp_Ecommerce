@@ -1,4 +1,4 @@
-
+// Id generator for orders
 function idGenerator() {
     let idGenerator = Math.random() * 1000000000000
     idGenerator = String(Math.trunc(idGenerator))

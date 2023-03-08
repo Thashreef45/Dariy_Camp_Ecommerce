@@ -15,7 +15,7 @@ const { request } = require('../routes/userRoute')
 const Razorpay = require('razorpay')
 const { log } = require('console')
 const console = require('console')
-let instance = new Razorpay({ key_id: "rzp_test_iokOwNXFWNwA5p", key_secret: "ZT1y2f2HnwGWoM9ESkUn4Ugu" })
+let instance = new Razorpay({ key_id: process.env.RAZORPAY_KEYID, key_secret: process.env.RAZORPAY_KEYSECRET })
 
 
 let userId // used to store signup user email
@@ -112,7 +112,7 @@ const signupverify = async (req, res) => {
                 password: encPassword,
             })
             const userData = await user.save()
-
+            tempUser = ''
 
             scsMsg = 'Account Created . Please Login'
             res.redirect('/login')
@@ -120,7 +120,7 @@ const signupverify = async (req, res) => {
         else {
             errMsg = 'Entered OTP is wrong'
             res.redirect('/signupOtp')
-            tempUser = ''
+            //tempUser = ''
         }
 
     } catch (error) {
@@ -185,7 +185,6 @@ const loadproducts = async (req, res) => {
                     for (let index = 0; index < productArray.length; index++) {
                         if (String(productArray[index]._id) == String(loginData.cart[i]._id)) {
                             tAmount = productArray[index].rate * loginData.cart[i].count
-                            console.log(tAmount, 'of -', productArray[index].name);
                             productArray[index].inCart = true
                         }
                         else {
@@ -214,7 +213,6 @@ const loadproducts = async (req, res) => {
             setProductArray()
             categoryArray = await categoryarray()
             isInCart()
-            console.log(productArray, '<<updated incart,ivideyum 213');
             res.render('products', { isLogin, productArray, categoryArray, inCart })
         }
     } catch (error) {
@@ -246,12 +244,17 @@ const category = async (req, res) => {
 const productPage = async (req, res) => {
     try {
         let productName = await productModel.findOne({ _id: req.query.id })
-        for (let index = 0; index < loginData?.cart.length; index++) {
-            if (productName._id == String(loginData.cart[index]._id)) {
-                productName.inCart = true
+        if(productName){
+            for (let index = 0; index < loginData?.cart.length; index++) {
+                if (productName._id == String(loginData.cart[index]._id)) {
+                    productName.inCart = true
+                }
             }
+            res.render('productpage', { productName, isLogin })
         }
-        res.render('productpage', { productName, isLogin })
+        else{
+            res.redirect('404')
+        }
     } catch (error) {
         console.log(error)
     }
@@ -308,7 +311,6 @@ const addressManagement = async (req, res) => {
         loginData = await User.findOne({ _id: loginData._id })
         let address = loginData.address
         let addressLength = loginData.address.length
-        console.log(addressLength, '<<length');
         res.render('manageaddress', { address, isLogin, addressLength })
     } catch (error) {
         console.log(error)
@@ -325,7 +327,6 @@ const addAddress = async (req, res) => {
 
 const newAddressUpdate = async (req, res) => {
     try {
-        console.log(req.body, '284', loginData._id);
         let data = await User.updateOne({ _id: loginData._id }, { $addToSet: { address: [{ address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state }] } }, { new: true })
         loginData = await User.findOne({ _id: loginData._id })
 
@@ -382,8 +383,6 @@ const updateEditedAddress = async (req, res) => {
         }
     });
     dfAddress = dfAddress[0]
-    // console.log(dfAddress,'dfad',indexOfDfAddress,'dfindex',address,'clicked address',indexOfAddress,'clicked index',Boolean(req.body.default),'tr/fl',req.body,address.default,'--');
-
     if (address.default) {
         loginData.address[indexOfAddress] =
             { address: req.body.address, pincode: req.body.postalcode, place: req.body.city, state: req.body.state, default: true }
@@ -611,7 +610,6 @@ const addtoCart = async (req, res) => {
             let data = await User.updateOne({ _id: loginData._id }, { $addToSet: { cart: [{ _id: req.query.id, count: 1 }] } }, { new: true })
         }
         loginData = await User.findOne({ _id: loginData._id })
-        console.log(loginData.cart, 'updated cart 556');
         res.redirect('/products')
     } catch (error) {
         console.log(error);
@@ -629,13 +627,11 @@ const cartUpdate = async (req, res) => {
         return Number(val.count)
     })
 
-    // console.log(cartId,cartCount,'<<mapped ids -570');
     let cartData = await productModel.find({ _id: { $in: cartId } }, { _id: 1 }).lean()
 
     for (let i = 0; i < cartData.length; i++) {
         cartData[i].count = cartCount[i]
     }
-    console.log(cartData, '<<$in data');
     let data = await User.updateOne({ _id: loginData._id }, { $set: { cart: cartData } })
 
     res.json(cartData)
@@ -658,7 +654,6 @@ const removeItem = async (req, res) => {
     loginData.cart = nwArray
 
     let data = await User.updateOne({ _id: loginData._id }, { cart: loginData.cart })
-    console.log(loginData.cart);
     loginData = await User.findOne({ _id: loginData._id })
     res.redirect('/cart')
     } catch (error) {
@@ -680,19 +675,14 @@ const checkout = async (req, res) => {
             return val.count
         })
     
-        let cartArray = await productModel.find({ _id: { $in: cartData } }).lean()
-        console.log(cartQuantity, '<< cart --array quantities 505');
-    
+        let cartArray = await productModel.find({ _id: { $in: cartData } }).lean()    
         let Total = 0
         for (let i = 0; i < cartArray.length; i++) {
             cartArray[i].count = cartQuantity[i]
             cartArray[i].tAmount = Number(cartQuantity[i]) * Number(cartArray[i].rate)
             Total += Number(cartQuantity[i]) * Number(cartArray[i].rate)
         }
-        //Total = 'Rs ' + Total
-    
-        console.log(cartArray, '<< cart array 510');
-    
+            
         let itemsCount = cartArray.length
     
         let subTotal = 0
@@ -712,7 +702,6 @@ const checkout = async (req, res) => {
 const placeOrder = async (req, res) => {
     try {
         let order = req.body
-    console.log(order, '--', order[order.length - 1].couponused, '668 place order function');
     order.length - 1
     let checkouted
 
@@ -729,7 +718,6 @@ const placeOrder = async (req, res) => {
     }
     if (order[order.length - 1].deliveryMethod == 'normal') {
         date = [{ orderdate: new Date() }]
-        console.log(date)
     }
 
     else {
@@ -739,7 +727,6 @@ const placeOrder = async (req, res) => {
     let address = loginData.address.filter((val => val._id == order[order.length - 1].addressid))
 
     if (order[order.length - 1].couponused) {
-        console.log('coupon status 1');
         let coupon = []
         coupon.push({ name: order[order.length - 1].promocode, offer: order[order.length - 1].offer })
 
@@ -759,7 +746,6 @@ const placeOrder = async (req, res) => {
     }
     else {
 
-        console.log('coupon status 2');
         const cart = await orderModel({
             userId: loginData._id,
             product: product,
@@ -812,7 +798,6 @@ const myOrders = async (req, res) => {
     })
 
     myorders.reverse()
-    console.log(myorders)
     res.render('myoders', { myorders, isLogin, loginData })
     } catch (error) {
         console.log(error)
@@ -843,28 +828,22 @@ const couponCheck = async (req, res) => {
     
         if (data[0]?.users) {
             data[0].users.forEach((element) => {
-                console.log(element.userid, '<<ids 749');
                 if (String(element.userid) == loginData._id) {
                     usedCode = true
-                    console.log('usedCode = true');
                 }
             });
         }
     
         if (!data || data.length == 0) {
-            console.log('Invalid Coupon 1');
             res.json('Invalid Coupon')
         }
         else if (data[0]?.isvalid == false) {
-            console.log('coupon blocked ');
             res.json('Invalid Coupon')
         }
         else if (data[0]?.expiry < date) {
-            console.log('Invalid Coupon 2');
             res.json('Invalid Coupon')
         }
         else if (usedCode) {
-            console.log('Invalid Coupon 3');
             res.json('Already Used')
         }
         else {
@@ -879,7 +858,6 @@ const couponCheck = async (req, res) => {
 const myordersDetails = async (req, res) => {
     try {
         let orderData = await orderModel.find({ _id: req.query.id }).lean()
-        console.log(orderData, '[[[', req.body, '<<807');
         let ids = orderData[0].product.map((val) => {
             return val.id
         })
@@ -895,10 +873,8 @@ const myordersDetails = async (req, res) => {
         let actualPrice
         let coupon
         address = address.slice(0, 4)
-        console.log(address, date, '[[799');
+        let userName = loginData.name
     
-    
-        console.log(ids, paymentmethod, deliveryMethod, subTotal, '795')
         let productData = await productModel.find({ _id: { $in: ids } }).lean()
     
         if (orderData[0].couponused) {
@@ -911,10 +887,10 @@ const myordersDetails = async (req, res) => {
             element.quantity = orderData[0].product[index].quantity
             element.total = element.rate * element.quantity
         })
-    
+
         res.render('orderdetails', {
             productData, paymentmethod, deliveryMethod, subTotal, orderId, address,
-            isLogin, orderData, status, date, scheduledDate, actualPrice, coupon
+            isLogin, orderData, status, date, scheduledDate, actualPrice, coupon , userName
         })
     } catch (error) {
         console.log(error);
@@ -959,6 +935,26 @@ const siggen = async (req, res) => {
     }
 }
 
+const invoice = async (req,res)=>{
+    let data = await orderModel.find({orderId :req.body.orderId},{_id:0,product:1}).lean()
+    data = data[0].product
+    console.log(data,'939 << prjct')
+    let productData =[]
+    data.forEach((element)=>{
+        // element.sum = element.price * element.quantity
+        productData.push({
+            "quantity": element.quantity,
+            "description": element.name,
+            "price": element.price
+        })
+    })
+    // "quantity": 4.5678,
+    //         "description": "Product 3",
+    //         "price": 6324.453456
+    console.log(productData,'---',data,'939')
+    res.json(productData) 
+}
+
 
 
 //404 
@@ -966,6 +962,7 @@ const errorPage = async (req, res) => {
     console.log(isLogin);
     res.render('error', { isLogin })
 }
+
 module.exports = {
     loadSignup,
     loadHome,
@@ -1007,7 +1004,7 @@ module.exports = {
     cancelOrder,
     couponCheck,
     myordersDetails,
-
+    invoice,
 
     siggen,
     ordergen

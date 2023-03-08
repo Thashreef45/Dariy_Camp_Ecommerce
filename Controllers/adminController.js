@@ -42,13 +42,12 @@ const adminLogin = async (req, res) => {
 }
 
 const adminHome = async (req, res) => {
-    if (req.session.admin) {
-
+    try {
         res.render('home')
+    } catch (error) {
+        console.log(error)
     }
-    else {
-        res.redirect('/admin/login')
-    }
+        
 
 }
 const adminData = async (req, res) => {
@@ -141,15 +140,14 @@ const adminData = async (req, res) => {
 }
 
 const userManagement = async (req, res) => {
-
-    if (req.session.admin) {
+    try {
         res.render('users', { userArray, errMsg })
         errMsg = ''
         setUserCollection()
+    } catch (error) {
+        console.log(error);
     }
-    else {
-        res.redirect('/admin/login')
-    }
+
 }
 
 
@@ -201,7 +199,7 @@ const userSearch = async (req, res) => {
 
 //For Blockin and Unblocking user 
 const userStatusManage = async (req, res) => {
-    if (req.session.admin) {
+    try {
         let uId = req.query.id
         let isBlocked = await userModel.findById({ _id: uId })
         if (isBlocked.status) {
@@ -211,16 +209,14 @@ const userStatusManage = async (req, res) => {
         }
         setUserCollection()
         res.redirect('/admin/users')
+    } catch (error) {
+        console.log(error);
     }
-    else {
-        res.redirect('/admin/login')
-    }
-
 }
 
 //Product page
 const product = async (req, res) => {
-    if (req.session.admin) {
+    try {
         if (!searched) {
             arrayProducts = await setProductCollection()
             res.render('product', { arrayProducts })
@@ -230,11 +226,9 @@ const product = async (req, res) => {
             searched = false
             arrayProducts = await setProductCollection()
         }
+    } catch (error) {
+        console.log(error);
     }
-    else {
-        res.redirect('/admin/login')
-    }
-
 }
 
 //Produch search
@@ -273,7 +267,6 @@ const updateEditedProduct = async (req, res) => {
     let images = req.files.map((file)=>{
         return file.filename
     })
-    console.log(images,'276  admin image section')
     let editProduct = await productModel.updateOne({ _id: req.query.id },
         {
             $set: {
@@ -299,12 +292,11 @@ const productDelete = async (req, res) => {
 
 //Add Product page
 const addProduct = async (req, res) => {
-    if (req.session.admin) {
+    try {
         setCategoryCollection()
         res.render('addproducts', { categoryArray })
-    }
-    else {
-        res.redirect('/admin/login')
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -426,10 +418,7 @@ const orderManagement = async (req, res) => {
    
 }
 const adminOrderViewproducts = async (req, res) => {
-    console.log(req.query.id, '318 admin side');
-
     let orderData = await orderModel.find({ _id: req.query.id }).lean()
-    console.log(orderData);
     let ids = orderData[0].product.map((val) => {
         return val.id
     })
@@ -462,7 +451,6 @@ const adminOrderViewproducts = async (req, res) => {
         element.total = element.rate * element.quantity
     })
 
-    console.log(productData, '<<797')
     res.render('orderdetails', {
         productData, paymentmethod, deliveryMethod, subTotal, orderId,
          address, orderData, userId,userName,actualPrice,coupon
@@ -474,7 +462,6 @@ const adminOrderViewproducts = async (req, res) => {
 
 const adminProductDelevered = async (req, res) => {
 
-    console.log(req.query.id, 'id vannu 288 admin');
     const data = await orderModel.updateOne({ _id: req.query.id }, { $set: { status: 'Delivered' } })
 
     res.redirect('/admin/order-management')
@@ -488,7 +475,6 @@ const Coupon = async (req, res) => {
 }
 
 const addCoupon = async (req, res) => {
-    console.log(req.body);
     let data = await couponModel.find().lean()
 
     let unique = true
@@ -499,7 +485,6 @@ const addCoupon = async (req, res) => {
     })
 
     let input = req.body.coupon
-    console.log(input, '<<null input is here');
     if (input.replace(/\s/g, '') == '') {
         errMsg = 'Spaces are not taken as input'
         res.redirect('/admin/coupon')
@@ -521,7 +506,6 @@ const addCoupon = async (req, res) => {
 
 const couponStatusUpdate = async (req, res) => {
     let coupon = await couponModel.findOne({ _id: req.body.id })
-    console.log(req.body, coupon, '<<coupon id ,328 admin side ,body');
 
 
     if (coupon.isvalid) {

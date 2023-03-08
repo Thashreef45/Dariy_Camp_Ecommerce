@@ -6,6 +6,16 @@
     --dark: #404A3D;
 }
 
+.cust-inputbox {
+    width: 50%;
+}
+
+@media screen and (max-width: 600px) {
+    .cust-inputbox {
+        width: 100% !important;
+    }
+}
+
 .back-to-top {
     position: fixed;
     display: none;
@@ -114,7 +124,7 @@
 }
 
 @media (max-width: 991.98px) {
-    .navbar .navbar-nav .nav-link  {
+    .navbar .navbar-nav .nav-link {
         margin-right: 0;
         padding: 10px 0;
     }
@@ -175,7 +185,7 @@
         position: relative;
         min-height: 450px;
     }
-    
+
     #header-carousel .carousel-item img {
         position: absolute;
         width: 100%;

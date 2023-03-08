@@ -8,9 +8,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/" class="nav-item nav-link ">Home</a>
             <a href="/about" class="nav-item nav-link">About</a>
-            <a href="/products" class="nav-item nav-link">Products</a>
+            <a href="/products" class="nav-item nav-link active">Products</a>
 
             {{#if isLogin}}
             <form action="/logout" class="nav-item nav-link text-danger" method="post">
@@ -41,8 +41,8 @@
                             <div class="text-center p-4"> <img id="main-image"
                                     src="../../Public/img/uploaded-images/{{productName.image}}" width="250" /> </div>
                             <div class="thumbnail text-center"> <img onclick="change_image(this)"
-                                    src="../../Public/img/uploaded-images/{{productName.images.[0]}}" width="70"> <img onclick="change_image(this)"
-                                    src="../../Public/img/uploaded-images/{{productName.images.[1]}}" width="70"><img onclick="change_image(this)"
+                                    src="../../Public/img/uploaded-images/{{productName.images.[0]}}" width="70">  <img onclick="change_image(this)"
+                                    src="../../Public/img/uploaded-images/{{productName.images.[1]}}" width="70">  <img onclick="change_image(this)"
                                     src="../../Public/img/uploaded-images/{{productName.images.[2]}}" width="70"></div>
                         </div>
                     </div>

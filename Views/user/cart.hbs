@@ -8,7 +8,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <div class="navbar-nav ms-auto p-4 p-lg-0">
-      <a href="/" class="nav-item nav-link active">Home</a>
+      <a href="/" class="nav-item nav-link ">Home</a>
       <a href="/about" class="nav-item nav-link">About</a>
       <a href="/products" class="nav-item nav-link">Products</a>
 
@@ -19,7 +19,7 @@
       {{else }}
       <a href="/login" class="nav-item nav-link">Login / Sign up</a>
       {{/if}}
-      <a href="/cart" class="nav-item nav-link"><i class="fa fa-shopping-cart"></i></a>
+      <a href="/cart" class="nav-item nav-link active"><i class="fa fa-shopping-cart"></i></a>
       {{#if isLogin}}
       <a href="/profile" class="nav-item nav-link"><i class="fa fa-user-circle"></i></a>
       {{/if}}
@@ -262,7 +262,7 @@
 
     console.log(cart)
 
-    fetch('http://localhost:3000/cart-updation', {
+    fetch('/cart-updation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

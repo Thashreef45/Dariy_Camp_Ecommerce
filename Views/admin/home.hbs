@@ -52,10 +52,10 @@
         --}}
         <div class="navbar-nav">
             <div class="nav-item text-nowrap">
-                <form action="/admin/logout" method="post">
+                {{!-- <form action="/admin/logout" method="post">
                     <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
                         class="bg-dark text-primary nav-link px-3">
-                </form>
+                </form> --}}
                 {{!-- <a class="nav-link px-3" href="">Sign out</a> --}}
             </div>
         </div>
@@ -117,21 +117,27 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard</h1>
-                    {{!-- <div class="btn-toolbar mb-2 mb-md-0">
+                    <h1 class="h2">Dashboard </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                            <form action="/admin/logout" method="post">
+                                <input id="logout" value="Sign out" type="submit" style="border: 0ch;"
+                                    class="btn btn-sm btn-outline-dark">
+                            </form>
+                            {{!-- <button type="button" class="btn btn-sm btn-outline-dark">Share</button> --}}
+                            {{!-- <button type="button" class="btn btn-sm btn-outline-secondary">Export</button> --}}
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                        {{!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                             <span data-feather="calendar"></span>
                             This week
-                        </button>
-                    </div> --}}
+                        </button> --}}
+                    </div>
                 </div>
 
-                <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas><br><hr>
-                <canvas class="my-4 w-100" id="payment" width="900" height="380"></canvas><br><hr>
+                <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas><br>
+                <hr>
+                <canvas class="my-4 w-100" id="payment" width="900" height="380"></canvas><br>
+                <hr>
                 <canvas class="my-4 w-100" id="sales" width="900" height="380"></canvas>
 
 
@@ -149,7 +155,7 @@
                     'Content-type': 'application/json'
                 },
             })
-            const { counts, categories ,  paymentCount    ,dateArray,weeklySales} = await data.json()
+            const { counts, categories, paymentCount, dateArray, weeklySales } = await data.json()
 
             showgraph(counts, categories)
             payment(paymentCount)
@@ -186,19 +192,19 @@
         }
 
 
-        
+
         function payment(paymentCount) {
             var xValues = ["COD", "RAZOR"];
             var yValues = paymentCount
             var barColors = [
-                
+
                 "#1e7145",
                 "#7d2eab",
                 "e8c3b9",
                 "#b91d47",
                 "#00aba9",
                 "#2b5797"
-                
+
             ];
 
             new Chart("payment", {
@@ -219,7 +225,7 @@
             });
         }
 
-        function sales(dateArray , weeklySales){
+        function sales(dateArray, weeklySales) {
             var xValues = dateArray
             var yValues = weeklySales
             var barColors = [
