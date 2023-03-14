@@ -15,7 +15,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
-                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/" class="nav-item nav-link ">Home</a>
                     <a href="/about" class="nav-item nav-link">About</a>
                     <a href="/products" class="nav-item nav-link">Products</a>
 
@@ -24,7 +24,7 @@
                         <input value="Logout" type="submit" style="border: 0ch;color:red;background-color:white;">
                     </form>
                     {{else }}
-                    <a href="/login" class="nav-item nav-link">Login / Sign up</a>
+                    <a href="/login" class="nav-item nav-link active">Login / Sign up</a>
                     {{/if}}
                 </div>
             </div>
@@ -40,18 +40,18 @@
                     <h2 class="text-center">SIGNUP</h2><br>
                     <div class="form-floating mb-3 ">
                         <input type="text" id="name" name="name" class="form-control" class="floatingInput"
-                            placeholder="Enter your Name">
+                            placeholder="Enter your Name" required>
                         {{!-- pattern="/^[a-zA-Z ]+$/" title="Enter a valid name" --}}
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating mb-3 ">
                         <input type="email" id="mail" name="email" class="form-control" class="floatingInput"
-                            placeholder="name@example.com">
+                            placeholder="name@example.com" required>
                         <label for="floatingInput">Email address</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" id="pwd" name="password" class="form-control" class="floatingPassword"
-                            placeholder="Password">
+                            placeholder="Password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
                     <br>

@@ -44,7 +44,7 @@ app.engine('hbs', hbs.engine({
         allowProtoPropertiesByDefault: true,
         allowProtoMethodsByDefault: true,
     },
-    layoutsDir: __dirname + '/views/layout/',
+    layoutsDir: __dirname + '/Views/layout/',
     // partialsDir: __dirname + '/views/partials'
 }));
 

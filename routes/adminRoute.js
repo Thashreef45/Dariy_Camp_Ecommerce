@@ -12,7 +12,7 @@ const { isLogoutAdmin, isLoginAdmin } = require('../middleware/auth')
 
 
 admin_route.set('view engine','hbs')
-admin_route.set('views','./views/admin')
+admin_route.set('views','./Views/admin')
 
 admin_route.get('/',(req,res)=>{res.redirect('admin/login')})
 admin_route.get('/login',adminController.adminLogin)
