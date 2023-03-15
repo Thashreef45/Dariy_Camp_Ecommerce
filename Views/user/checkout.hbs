@@ -257,7 +257,7 @@
         document.getElementById('errMsg').innerHTML = ''
         document.getElementById('scsMsg').innerHTML = ''
 
-        let data = await fetch('http://localhost:3000/coupon-check', {
+        let data = await fetch('/coupon-check', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'

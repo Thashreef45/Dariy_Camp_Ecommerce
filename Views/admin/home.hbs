@@ -149,7 +149,7 @@
     <script>
         graph()
         async function graph() {
-            const data = await fetch('http://localhost:3000/admin/admin-home-data', {
+            const data = await fetch('/admin/admin-home-data', {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
