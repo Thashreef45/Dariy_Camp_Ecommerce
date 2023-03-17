@@ -12,7 +12,6 @@ const adminRoute = require('./routes/adminRoute')
 const userRoute = require('./routes/userRoute')
 
 
-
 app.use(cors())
 app.use(nocache())
 app.use(express.static(__dirname ))
@@ -47,7 +46,6 @@ app.engine('hbs', hbs.engine({
     layoutsDir: __dirname + '/Views/layout/',
     // partialsDir: __dirname + '/views/partials'
 }));
-
 
 
 handlebars.registerHelper('ifeq', function (a, b, options) {

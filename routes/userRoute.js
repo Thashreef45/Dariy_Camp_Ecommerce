@@ -4,7 +4,6 @@ const userController = require('../controllers/userController')
 const { isLogged, isLogout } = require('../middleware/auth')
 
 
-
 user_route.set('view engine', 'hbs')
 user_route.set('views', './Views/user')
 

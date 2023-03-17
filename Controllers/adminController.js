@@ -262,6 +262,7 @@ const editProduct = async (req, res) => {
     categoryArray = await setCategoryCollection()
     res.render('editproduct', { categoryArray, editProduct })
 }
+
 const updateEditedProduct = async (req, res) => {
 
     let images = req.files.map((file)=>{
@@ -278,6 +279,8 @@ const updateEditedProduct = async (req, res) => {
         })
     res.redirect('/admin/product')
 }
+
+
 
 //Deleting a product
 const productDelete = async (req, res) => {
@@ -301,13 +304,10 @@ const addProduct = async (req, res) => {
 }
 
 const updateProduct = async (req, res) => {
-
     let images = req.files.map((file)=>{
        return file.filename
     })
-
-
-
+     
     const newProduct = new productModel({
         image: images[0],
         images : images,
@@ -319,18 +319,7 @@ const updateProduct = async (req, res) => {
         description: req.body.productdescription
     })
     const productSave = newProduct.save()
-
-    // const newProduct = new productModel({
-    //     image: req.file.filename,
-    //     name: req.body.productname,
-    //     unit: req.body.producunit,
-    //     rate: req.body.productprice,
-    //     quantity: req.body.productquantity,
-    //     category: req.body.category,
-    //     description: req.body.productdescription
-    // })
-    // const productSave = newProduct.save()
-    // res.redirect('/admin/product')
+    res.redirect('/admin/product')
 }
 
 const categoryManagement = async (req, res) => {
